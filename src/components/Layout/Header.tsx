@@ -1,0 +1,92 @@
+import { Search, User, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-hero flex items-center justify-center">
+              <span className="text-white font-bold text-sm">VP</span>
+            </div>
+            <span className="font-semibold text-lg text-foreground">VideoPortal</span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Home
+            </a>
+            <a href="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              New Launches
+            </a>
+            <a href="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Playlists
+            </a>
+          </nav>
+
+          {/* Search Bar */}
+          <div className="flex-1 max-w-md mx-8 hidden lg:block">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search products, tutorials..."
+                className="pl-10 rounded-full border-input focus:border-primary"
+              />
+            </div>
+          </div>
+
+          {/* User Actions */}
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="icon" className="lg:hidden">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm">
+              <User className="h-4 w-4 mr-2" />
+              Login
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t animate-slide-up">
+            <nav className="flex flex-col space-y-4">
+              <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                Home
+              </a>
+              <a href="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                New Launches
+              </a>
+              <a href="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                Playlists
+              </a>
+              <div className="pt-2">
+                <Input
+                  placeholder="Search products, tutorials..."
+                  className="rounded-full border-input focus:border-primary"
+                />
+              </div>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header;
