@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "@/components/Layout/Header";
-import VideoCard from "@/components/VideoCard/VideoCard";
+import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
+import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
 import { Button } from "@/components/ui/button";
 import { mockProducts } from "@/data/mockData";
-import { ArrowLeft, Share2, Play } from "lucide-react";
+import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const product = mockProducts.find(p => p.id === productId);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
+  const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] = useState<{id: string, title: string} | null>(null);
 
   if (!product) {
     return (
@@ -85,28 +89,56 @@ const ProductDetail = () => {
       {/* Lessons Grid */}
       <main className="container mx-auto px-4 lg:px-8 py-12">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-foreground mb-8 animate-fade-in">
-            Lessons & Tutorials
-          </h2>
+          <div className="flex items-center justify-between mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-foreground">
+              Lessons & Tutorials
+            </h2>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                <LayoutGrid className="w-4 h-4 mr-2" />
+                Grid
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="w-4 h-4 mr-2" />
+                List
+              </Button>
+            </div>
+          </div>
           
           {product.videos.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={viewMode === 'grid' 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+              : "space-y-4"
+            }>
               {product.videos.map((video, index) => (
                 <div
                   key={video.id}
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 100 + 200}ms` }}
                 >
-                  <VideoCard
+                  <VideoCardWithMenu
                     id={video.id}
                     title={video.title}
                     thumbnail={video.thumbnail}
                     duration={video.duration}
                     lessonCount={1}
                     category="Tutorial"
+                    viewMode={viewMode}
                     onClick={() => {
                       // Navigate to tutorial viewer
                       console.log(`Navigate to tutorial: ${video.id}`);
+                    }}
+                    onAddToPlaylist={() => {
+                      setSelectedVideoForPlaylist({ id: video.id, title: video.title });
+                      setPlaylistModalOpen(true);
                     }}
                   />
                 </div>
@@ -133,6 +165,19 @@ const ProductDetail = () => {
           )}
         </div>
       </main>
+
+      {/* Playlist Modal */}
+      {selectedVideoForPlaylist && (
+        <PlaylistModal
+          isOpen={playlistModalOpen}
+          onClose={() => {
+            setPlaylistModalOpen(false);
+            setSelectedVideoForPlaylist(null);
+          }}
+          videoId={selectedVideoForPlaylist.id}
+          videoTitle={selectedVideoForPlaylist.title}
+        />
+      )}
     </div>
   );
 };

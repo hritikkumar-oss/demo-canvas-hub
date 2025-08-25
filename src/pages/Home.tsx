@@ -8,12 +8,25 @@ const Home = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredProducts = mockProducts.filter((product) => {
-    const matchesFilter = activeFilter === "all" || 
-      product.category.toLowerCase() === activeFilter.toLowerCase();
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+  const filters = [
+    { id: "all", label: "All Products", count: mockProducts.length },
+    { id: "sales", label: "Sales", count: 2 },
+    { id: "commerce", label: "Commerce", count: 1 },
+    { id: "design", label: "Design", count: 1 },
+    { id: "finance", label: "Finance", count: 0 },
+  ];
+
+  const filteredProducts = mockProducts.filter(product => {
+    // Search both product name and video names
+    const productNameMatch = product.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const videoNameMatch = product.videos?.some(video => 
+      video.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const matchesSearch = searchQuery === "" || productNameMatch || videoNameMatch;
+    
+    const matchesFilter = activeFilter === "all" || product.category.toLowerCase() === activeFilter.toLowerCase();
+    
+    return matchesSearch && matchesFilter;
   });
 
   return (
@@ -41,7 +54,7 @@ const Home = () => {
           <FilterTabs
             activeFilter={activeFilter}
             onFilterChange={setActiveFilter}
-            filters={categories}
+            filters={filters}
           />
         </div>
 

@@ -35,10 +35,10 @@ const VideoCard = ({
   };
   return (
     <Card 
-      className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 animate-fade-in"
+      className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 animate-fade-in h-full flex flex-col"
       onClick={handleClick}
     >
-      <CardContent className="p-0">
+      <CardContent className="p-0 flex flex-col h-full">
         {/* Thumbnail Container */}
         <div className="relative aspect-video overflow-hidden rounded-t-xl">
           <img
@@ -49,7 +49,7 @@ const VideoCard = ({
           
           {/* Play Overlay */}
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
+            <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
               <Play className="w-6 h-6 text-primary ml-1" fill="currentColor" />
             </div>
           </div>
@@ -72,12 +72,12 @@ const VideoCard = ({
         </div>
 
         {/* Content */}
-        <div className="p-4">
-          <h3 className="font-semibold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+        <div className="p-4 flex-1 flex flex-col">
+          <h3 className="font-semibold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors flex-1">
             {title}
           </h3>
           
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center justify-between text-sm text-muted-foreground mt-auto">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <Clock className="w-4 h-4" />
