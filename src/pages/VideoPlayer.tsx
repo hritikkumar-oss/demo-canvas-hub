@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Play, Share2, ArrowLeft } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Menu, Play, Share2, ArrowLeft } from "lucide-react";
 import Header from "@/components/Layout/Header";
-import ShareModal from "@/components/ShareModal";
-import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { mockProducts } from "@/data/mockData";
 
 const VideoPlayer = () => {
-  const { productSlug, videoSlug } = useParams();
-  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const { productId, videoId } = useParams();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
-  const product = mockProducts.find(p => p.id === productSlug);
-  const video = product?.videos.find(v => v.id === videoSlug);
-  const currentVideoIndex = product?.videos.findIndex(v => v.id === videoSlug) ?? 0;
+  const product = mockProducts.find(p => p.id === productId);
+  const video = product?.videos.find(v => v.id === videoId);
+  const currentVideoIndex = product?.videos.findIndex(v => v.id === videoId) ?? 0;
 
   if (!product || !video) {
     return (
@@ -99,15 +97,25 @@ const VideoPlayer = () => {
       <Header />
       
       <div className="flex h-[calc(100vh-80px)]">
-        {/* Fixed Dark Sidebar */}
-        <div className="w-80 bg-gray-900 border-r border-gray-700 overflow-hidden flex-shrink-0">
+        {/* Collapsible Sidebar */}
+        <div className={`${sidebarCollapsed ? 'w-0' : 'w-80'} transition-all duration-300 bg-muted/30 border-r overflow-hidden flex-shrink-0`}>
           <div className="h-full flex flex-col">
             {/* Sidebar Header */}
-            <div className="p-4 border-b border-gray-700 bg-gray-800/50 sticky top-0 z-10">
-              <h2 className="font-semibold text-white truncate">
-                {product.title}
-              </h2>
-              <p className="text-sm text-gray-400 mt-1">
+            <div className="p-4 border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-foreground truncate">
+                  {product.title}
+                </h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="flex-shrink-0"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">
                 {lessons.length} lessons
               </p>
             </div>
@@ -116,22 +124,22 @@ const VideoPlayer = () => {
             <div className="flex-1 overflow-y-auto">
               <div className="p-2 space-y-2">
                 {lessons.map((lesson, index) => (
-                    <Card
-                      key={lesson.id}
-                      className={`cursor-pointer transition-all hover:shadow-sm bg-gray-800 border-gray-700 ${
-                        lesson.id === videoSlug 
-                          ? 'border-primary bg-primary/20' 
-                          : 'hover:border-primary/50'
-                      }`}
-                      onClick={() => handleLessonClick(lesson.id)}
-                    >
+                  <Card
+                    key={lesson.id}
+                    className={`cursor-pointer transition-all hover:shadow-sm ${
+                      lesson.id === videoId 
+                        ? 'border-primary bg-primary/5 shadow-sm' 
+                        : 'hover:border-primary/50'
+                    }`}
+                    onClick={() => handleLessonClick(lesson.id)}
+                  >
                     <CardContent className="p-3">
                       <div className="flex items-start space-x-3">
                         {/* Lesson Number */}
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
-                          lesson.id === videoSlug 
+                          lesson.id === videoId 
                             ? 'bg-primary text-primary-foreground' 
-                            : 'bg-gray-700 text-gray-300'
+                            : 'bg-muted text-muted-foreground'
                         }`}>
                           {index + 1}
                         </div>
@@ -139,16 +147,16 @@ const VideoPlayer = () => {
                         {/* Lesson Info */}
                         <div className="flex-1 min-w-0">
                           <h4 className={`font-medium text-sm line-clamp-2 mb-1 ${
-                            lesson.id === videoSlug ? 'text-primary' : 'text-white'
+                            lesson.id === videoId ? 'text-primary' : 'text-foreground'
                           }`}>
                             {lesson.title}
                           </h4>
-                          <p className="text-xs text-gray-400 mb-1 line-clamp-1">
+                          <p className="text-xs text-muted-foreground mb-1 line-clamp-1">
                             {lesson.description}
                           </p>
-                          <div className="flex items-center space-x-2 text-xs text-gray-400">
+                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                             <span>{lesson.duration}</span>
-                            {lesson.id === videoSlug && (
+                            {lesson.id === videoId && (
                               <div className="w-1 h-1 bg-primary rounded-full"></div>
                             )}
                           </div>
@@ -162,6 +170,19 @@ const VideoPlayer = () => {
           </div>
         </div>
 
+        {/* Show sidebar button when collapsed */}
+        {sidebarCollapsed && (
+          <div className="absolute left-4 top-24 z-20">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setSidebarCollapsed(false)}
+              className="shadow-lg"
+            >
+              <Menu className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
 
         {/* Main Video Area */}
         <div className="flex-1 flex flex-col">
@@ -178,22 +199,10 @@ const VideoPlayer = () => {
                   Back to {product.title}
                 </Button>
               </div>
-              <div className="flex items-center space-x-2">
-                <ShareModal type="video" itemId={videoSlug} itemTitle={video.title}>
-                  <Button variant="outline" size="sm">
-                    <Share2 className="w-4 h-4 mr-2" />
-                    Share Video
-                  </Button>
-                </ShareModal>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowPlaylistModal(true)}
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  Add to Playlist
-                </Button>
-              </div>
+              <Button variant="outline" size="sm">
+                <Share2 className="w-4 h-4 mr-2" />
+                Share Video
+              </Button>
             </div>
           </div>
 
@@ -266,13 +275,6 @@ const VideoPlayer = () => {
           </div>
         </div>
       </div>
-
-      <PlaylistModal
-        isOpen={showPlaylistModal}
-        onClose={() => setShowPlaylistModal(false)}
-        videoId={videoSlug || ''}
-        videoTitle={video.title}
-      />
     </div>
   );
 };

@@ -1,7 +1,12 @@
-import { Search, Menu, User, Share2 } from "lucide-react";
+import { Search, Menu, User, Share2, UserPlus, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ShareModal from "@/components/ShareModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 
 const Header = () => {
@@ -48,12 +53,24 @@ const Header = () => {
 
           {/* Share Button */}
           <div className="hidden md:block">
-            <ShareModal type="global">
-              <Button variant="outline" size="sm" className="rounded-full">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-            </ShareModal>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="rounded-full">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem>
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Share Admin Access
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Eye className="w-4 h-4 mr-2" />
+                  Share View-Only Access
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* User Actions */}

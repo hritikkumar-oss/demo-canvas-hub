@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { Plus, Upload, Edit, Trash2, Play, X, Check } from "lucide-react";
+import { useState } from "react";
+import { Plus, Upload, Edit, Trash2, Play } from "lucide-react";
 import Header from "@/components/Layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,12 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { mockProducts } from "@/data/mockData";
 
