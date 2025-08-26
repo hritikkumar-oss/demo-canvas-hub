@@ -29,63 +29,8 @@ const VideoPlayer = () => {
     );
   }
 
-  // Generate mock lessons (8-10 per product)
-  const lessons = product.videos.concat([
-    { 
-      id: 'lesson-1', 
-      title: 'Advanced Configuration Settings', 
-      description: 'Learn how to customize advanced settings', 
-      duration: '12:45', 
-      thumbnail: product.thumbnail,
-      videoUrl: '',
-      productId: product.id
-    },
-    { 
-      id: 'lesson-2', 
-      title: 'Integration Best Practices', 
-      description: 'Best practices for seamless integration', 
-      duration: '15:30', 
-      thumbnail: product.thumbnail,
-      videoUrl: '',
-      productId: product.id
-    },
-    { 
-      id: 'lesson-3', 
-      title: 'Troubleshooting Common Issues', 
-      description: 'Solutions to frequently encountered problems', 
-      duration: '18:20', 
-      thumbnail: product.thumbnail,
-      videoUrl: '',
-      productId: product.id
-    },
-    { 
-      id: 'lesson-4', 
-      title: 'Performance Optimization', 
-      description: 'Tips to maximize system performance', 
-      duration: '14:15', 
-      thumbnail: product.thumbnail,
-      videoUrl: '',
-      productId: product.id
-    },
-    { 
-      id: 'lesson-5', 
-      title: 'Security Configuration', 
-      description: 'Setting up secure access and permissions', 
-      duration: '16:45', 
-      thumbnail: product.thumbnail,
-      videoUrl: '',
-      productId: product.id
-    },
-    { 
-      id: 'lesson-6', 
-      title: 'Advanced Reporting Features', 
-      description: 'Generate comprehensive reports and analytics', 
-      duration: '20:30', 
-      thumbnail: product.thumbnail,
-      videoUrl: '',
-      productId: product.id
-    }
-  ]).slice(0, 10);
+  // Use existing videos from the product (they already have 8-10 mock videos)
+  const lessons = product.videos;
 
   const handleLessonClick = (lessonId: string) => {
     // Would navigate to the selected lesson
@@ -97,25 +42,15 @@ const VideoPlayer = () => {
       <Header />
       
       <div className="flex h-[calc(100vh-80px)]">
-        {/* Collapsible Sidebar */}
-        <div className={`${sidebarCollapsed ? 'w-0' : 'w-80'} transition-all duration-300 bg-muted/30 border-r overflow-hidden flex-shrink-0`}>
+        {/* Dark Fixed Sidebar */}
+        <div className="w-80 bg-gray-900 border-r border-gray-800 flex-shrink-0 overflow-hidden">\
           <div className="h-full flex flex-col">
             {/* Sidebar Header */}
-            <div className="p-4 border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-foreground truncate">
-                  {product.title}
-                </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                  className="flex-shrink-0"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
+            <div className="p-4 border-b border-gray-800 sticky top-0 z-10 bg-gray-900">
+              <h2 className="font-semibold text-white truncate">
+                {product.title}
+              </h2>
+              <p className="text-sm text-gray-400 mt-1">
                 {lessons.length} lessons
               </p>
             </div>
@@ -124,22 +59,21 @@ const VideoPlayer = () => {
             <div className="flex-1 overflow-y-auto">
               <div className="p-2 space-y-2">
                 {lessons.map((lesson, index) => (
-                  <Card
-                    key={lesson.id}
-                    className={`cursor-pointer transition-all hover:shadow-sm ${
-                      lesson.id === videoId 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'hover:border-primary/50'
-                    }`}
-                    onClick={() => handleLessonClick(lesson.id)}
-                  >
-                    <CardContent className="p-3">
+                    <div
+                      key={lesson.id}
+                      className={`cursor-pointer transition-all rounded-lg p-3 mx-2 mb-2 ${
+                        lesson.id === videoId 
+                          ? 'bg-primary/20 border border-primary' 
+                          : 'hover:bg-gray-800 bg-gray-800/50'
+                      }`}
+                      onClick={() => handleLessonClick(lesson.id)}
+                    >
                       <div className="flex items-start space-x-3">
                         {/* Lesson Number */}
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
                           lesson.id === videoId 
                             ? 'bg-primary text-primary-foreground' 
-                            : 'bg-muted text-muted-foreground'
+                            : 'bg-gray-700 text-gray-300'
                         }`}>
                           {index + 1}
                         </div>
@@ -147,14 +81,14 @@ const VideoPlayer = () => {
                         {/* Lesson Info */}
                         <div className="flex-1 min-w-0">
                           <h4 className={`font-medium text-sm line-clamp-2 mb-1 ${
-                            lesson.id === videoId ? 'text-primary' : 'text-foreground'
+                            lesson.id === videoId ? 'text-primary' : 'text-white'
                           }`}>
                             {lesson.title}
                           </h4>
-                          <p className="text-xs text-muted-foreground mb-1 line-clamp-1">
+                          <p className="text-xs text-gray-400 mb-1 line-clamp-1">
                             {lesson.description}
                           </p>
-                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                          <div className="flex items-center space-x-2 text-xs text-gray-400">
                             <span>{lesson.duration}</span>
                             {lesson.id === videoId && (
                               <div className="w-1 h-1 bg-primary rounded-full"></div>
@@ -162,27 +96,13 @@ const VideoPlayer = () => {
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Show sidebar button when collapsed */}
-        {sidebarCollapsed && (
-          <div className="absolute left-4 top-24 z-20">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setSidebarCollapsed(false)}
-              className="shadow-lg"
-            >
-              <Menu className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
 
         {/* Main Video Area */}
         <div className="flex-1 flex flex-col">
@@ -209,35 +129,16 @@ const VideoPlayer = () => {
           {/* Video Player Container */}
           <div className="flex-1 flex items-center justify-center p-6">
             <div className="w-full max-w-5xl">
-              {/* Fixed 16:9 Video Player */}
+              {/* Fixed 16:9 YouTube Player */}
               <div className="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
-                {/* Placeholder for video player */}
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="w-full h-full object-cover"
-                />
-                
-                {/* Video Overlay with YouTube-style player */}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 mx-auto cursor-pointer hover:bg-white/30 transition-colors">
-                      <Play className="w-12 h-12 ml-1" fill="currentColor" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">{video.title}</h3>
-                    <p className="text-sm opacity-80">
-                      YouTube embed would go here
-                    </p>
-                    <p className="text-xs opacity-60 mt-2">
-                      Duration: {video.duration}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Video Progress Bar (mock) */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-                  <div className="w-1/3 h-full bg-primary"></div>
-                </div>
+                <iframe
+                  src={video.videoUrl}
+                  title={video.title}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
               </div>
 
               {/* Video Info */}

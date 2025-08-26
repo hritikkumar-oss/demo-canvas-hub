@@ -1,80 +1,65 @@
 import { useState } from "react";
+import { Play, Folder, Filter } from "lucide-react";
 import Header from "@/components/Layout/Header";
-import VideoCard from "@/components/VideoCard/VideoCard";
-import { mockProducts } from "@/data/mockData";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { getNewLaunches } from "@/data/mockData";
 
 const NewLaunches = () => {
-  // Mock new products - in real app, would filter by launch date from Supabase
-  const [newProducts] = useState(mockProducts.slice(0, 6));
+  const [filter, setFilter] = useState<"all" | "products" | "videos">("all");
+  const { newProducts, newVideos } = getNewLaunches();
+
+  const filteredItems = () => {
+    const items = [];
+    
+    if (filter === "all" || filter === "products") {
+      items.push(...newProducts.map(product => ({ ...product, type: "product" as const })));
+    }
+    
+    if (filter === "all" || filter === "videos") {
+      items.push(...newVideos.map(video => ({ ...video, type: "video" as const })));
+    }
+    
+    return items.sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 lg:px-8 py-6">
-        {/* Hero Section */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            New Launches
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover our latest product demos and tutorials. Stay ahead with cutting-edge features and capabilities.
-          </p>
+      <div className="container mx-auto px-4 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">New Launches</h1>
+          <p className="text-muted-foreground">Discover the latest products and videos</p>
         </div>
 
-        {/* New Products Grid */}
-        {newProducts.length === 0 ? (
-          <Card className="max-w-md mx-auto">
-            <CardContent className="p-12 text-center">
-              <h3 className="text-lg font-semibold text-foreground mb-2">No New Launches Yet</h3>
-              <p className="text-muted-foreground">
-                Stay tuned for exciting new product releases and tutorials.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in delay-200">
-            {newProducts.map((product, index) => (
-              <div key={product.id} className="relative">
-                <VideoCard
-                  id={product.id}
-                  title={product.title}
-                  thumbnail={product.thumbnail}
-                  duration={product.videos?.[0]?.duration || "0:00"}
-                  lessonCount={product.lessonCount}
-                  category={product.category}
-                  isNew={true}
-                />
-                {/* Shiny "New" Badge */}
-                <div className="absolute -top-2 -right-2 z-10">
-                  <div className="relative">
-                    <div className="w-16 h-16 bg-gradient-to-br from-hero via-hero-hover to-hero rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-xs font-bold text-hero-foreground">NEW</span>
-                    </div>
-                    {/* Shine effect */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/30 to-transparent animate-pulse"></div>
+        <div className="flex items-center space-x-4 mb-8">
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <Button variant={filter === "all" ? "default" : "outline"} size="sm" onClick={() => setFilter("all")}>All</Button>
+          <Button variant={filter === "products" ? "default" : "outline"} size="sm" onClick={() => setFilter("products")}>Products</Button>
+          <Button variant={filter === "videos" ? "default" : "outline"} size="sm" onClick={() => setFilter("videos")}>Videos</Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredItems().map((item) => (
+            <Link key={`${item.type}-${item.id}`} to={item.type === "product" ? `/product/${item.id}` : `/video/${(item as any).productId}/${item.id}`}>
+              <div className="bg-card rounded-lg border overflow-hidden hover:shadow-lg transition-all">
+                <div className="relative aspect-video bg-muted">
+                  <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover" />
+                  <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">New</div>
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                    {item.type === "product" ? <Folder className="w-6 h-6 text-white" /> : <Play className="w-6 h-6 text-white" fill="currentColor" />}
                   </div>
                 </div>
+                <div className="p-4">
+                  <Badge variant="secondary" className="text-xs mb-2">{item.type === "product" ? "Product" : "Video"}</Badge>
+                  <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* Call to Action */}
-        <div className="text-center mt-16">
-          <h2 className="text-2xl font-bold text-foreground mb-4">
-            Looking for something specific?
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            Browse our complete library of product demos and tutorials.
-          </p>
-          <a
-            href="/"
-            className="inline-flex items-center px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
-          >
-            Explore All Products
-          </a>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

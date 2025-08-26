@@ -1,16 +1,16 @@
-import { Search, Menu, User, Share2, UserPlus, Eye } from "lucide-react";
+import { Search, Menu, User, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import ShareModal from "@/components/ShareModal";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const location = useLocation();
+
+  const isActivePath = (path: string) => location.pathname === path;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -26,18 +26,38 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link 
+              to="/" 
+              className={`transition-colors font-medium ${
+                isActivePath('/') ? 'text-primary' : 'text-foreground hover:text-primary'
+              }`}
+            >
               Home
-            </a>
-            <a href="/new-launches" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link 
+              to="/new-launches" 
+              className={`transition-colors font-medium ${
+                isActivePath('/new-launches') ? 'text-primary' : 'text-foreground hover:text-primary'
+              }`}
+            >
               New Launches
-            </a>
-            <a href="/playlists" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link 
+              to="/playlists" 
+              className={`transition-colors font-medium ${
+                isActivePath('/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
+              }`}
+            >
               Playlists
-            </a>
-            <a href="/admin" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link 
+              to="/admin" 
+              className={`transition-colors font-medium ${
+                isActivePath('/admin') ? 'text-primary' : 'text-foreground hover:text-primary'
+              }`}
+            >
               Admin
-            </a>
+            </Link>
           </nav>
 
           {/* Search Bar */}
@@ -53,24 +73,15 @@ const Header = () => {
 
           {/* Share Button */}
           <div className="hidden md:block">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-full">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Share Admin Access
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Eye className="w-4 h-4 mr-2" />
-                  Share View-Only Access
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="rounded-full"
+              onClick={() => setShareModalOpen(true)}
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
           </div>
 
           {/* User Actions */}
@@ -97,28 +108,43 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
-              <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Home
-              </a>
-              <a href="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 New Launches
-              </a>
-              <a href="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Playlists
-              </a>
-              <a href="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Admin
-              </a>
+              </Link>
               <div className="pt-2">
                 <Input
                   placeholder="Search products, tutorials..."
                   className="rounded-full border-input focus:border-primary"
                 />
               </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShareModalOpen(true)}
+                className="self-start"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
             </nav>
           </div>
         )}
       </div>
+      
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        type="global"
+      />
     </header>
   );
 };
