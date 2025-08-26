@@ -5,7 +5,12 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import ShareModal from "@/components/ShareModal";
 
-const Header = () => {
+interface HeaderProps {
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+}
+
+const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const location = useLocation();
@@ -67,6 +72,8 @@ const Header = () => {
               <Input
                 placeholder="Search products, tutorials..."
                 className="pl-10 rounded-full border-input focus:border-primary"
+                value={searchQuery}
+                onChange={(e) => onSearchChange?.(e.target.value)}
               />
             </div>
           </div>
@@ -124,6 +131,8 @@ const Header = () => {
                 <Input
                   placeholder="Search products, tutorials..."
                   className="rounded-full border-input focus:border-primary"
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange?.(e.target.value)}
                 />
               </div>
               <Button 

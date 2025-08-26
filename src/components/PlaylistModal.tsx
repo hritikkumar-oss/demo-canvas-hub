@@ -60,7 +60,7 @@ const PlaylistModal = ({ isOpen, onClose, video }: PlaylistModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md max-h-[80vh] overflow-y-auto">
+      <Card className="w-full max-w-md max-h-[80vh] overflow-y-auto animate-scale-in">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-lg">Add to Playlist</CardTitle>
           <Button

@@ -31,7 +31,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary via-hero to-primary-hover text-white py-16">

@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Layout/Header";
 import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
 import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
+import ShareModal from "@/components/ShareModal";
 import { Button } from "@/components/ui/button";
 import { mockProducts } from "@/data/mockData";
 import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
 
 const ProductDetail = () => {
   const { productId } = useParams();
+  const navigate = useNavigate();
   const product = mockProducts.find(p => p.id === productId);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] = useState<{id: string, title: string} | null>(null);
+
+  const firstVideo = product?.videos?.[0];
 
   if (!product) {
     return (
@@ -46,7 +51,11 @@ const ProductDetail = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setShareModalOpen(true)}
+              >
                 <Share2 className="w-4 h-4 mr-2" />
                 Share Product
               </Button>
@@ -71,11 +80,18 @@ const ProductDetail = () => {
               
               <div className="relative animate-fade-in delay-400">
                 <img
-                  src={product.thumbnail}
-                  alt={product.title}
+                  src={firstVideo?.thumbnail || product.thumbnail}
+                  alt={firstVideo?.title || product.title}
                   className="w-full aspect-video object-cover rounded-xl shadow-lg"
                 />
-                <div className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer">
+                <div 
+                  className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer"
+                  onClick={() => {
+                    if (firstVideo) {
+                      navigate(`/video/${productId}/${firstVideo.id}`);
+                    }
+                  }}
+                >
                   <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
                     <Play className="w-8 h-8 text-primary ml-1" fill="currentColor" />
                   </div>
@@ -133,8 +149,7 @@ const ProductDetail = () => {
                     category="Tutorial"
                     viewMode={viewMode}
                     onClick={() => {
-                      // Navigate to tutorial viewer
-                      console.log(`Navigate to tutorial: ${video.id}`);
+                      navigate(`/video/${productId}/${video.id}`);
                     }}
                     onAddToPlaylist={() => {
                       setSelectedVideoForPlaylist({ id: video.id, title: video.title });
@@ -178,6 +193,15 @@ const ProductDetail = () => {
           videoTitle={selectedVideoForPlaylist.title}
         />
       )}
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        type="product"
+        title={product?.title}
+        itemId={productId}
+      />
     </div>
   );
 };
