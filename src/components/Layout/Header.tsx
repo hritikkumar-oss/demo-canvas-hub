@@ -1,6 +1,12 @@
-import { Search, User, Menu } from "lucide-react";
+import { Search, Menu, User, Share2, UserPlus, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 
 const Header = () => {
@@ -20,14 +26,17 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <a href="/" className="text-foreground hover:text-primary transition-colors font-medium">
               Home
             </a>
-            <a href="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <a href="/new-launches" className="text-foreground hover:text-primary transition-colors font-medium">
               New Launches
             </a>
-            <a href="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <a href="/playlists" className="text-foreground hover:text-primary transition-colors font-medium">
               Playlists
+            </a>
+            <a href="/admin" className="text-foreground hover:text-primary transition-colors font-medium">
+              Admin
             </a>
           </nav>
 
@@ -40,6 +49,28 @@ const Header = () => {
                 className="pl-10 rounded-full border-input focus:border-primary"
               />
             </div>
+          </div>
+
+          {/* Share Button */}
+          <div className="hidden md:block">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="rounded-full">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem>
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Share Admin Access
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Eye className="w-4 h-4 mr-2" />
+                  Share View-Only Access
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* User Actions */}
@@ -74,6 +105,9 @@ const Header = () => {
               </a>
               <a href="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Playlists
+              </a>
+              <a href="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                Admin
               </a>
               <div className="pt-2">
                 <Input
