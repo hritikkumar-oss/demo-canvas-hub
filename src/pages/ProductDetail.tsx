@@ -125,21 +125,10 @@ const ProductDetail = () => {
                   style={{ animationDelay: `${index * 100 + 200}ms` }}
                 >
                   <VideoCardWithMenu
-                    id={video.id}
-                    title={video.title}
-                    thumbnail={video.thumbnail}
-                    duration={video.duration}
-                    lessonCount={1}
-                    category="Tutorial"
+                    video={video}
                     viewMode={viewMode}
-                    onClick={() => {
-                      // Navigate to tutorial viewer
-                      console.log(`Navigate to tutorial: ${video.id}`);
-                    }}
-                    onAddToPlaylist={() => {
-                      setSelectedVideoForPlaylist({ id: video.id, title: video.title });
-                      setPlaylistModalOpen(true);
-                    }}
+                    productSlug={product.id}
+                    videoSlug={video.id}
                   />
                 </div>
               ))}

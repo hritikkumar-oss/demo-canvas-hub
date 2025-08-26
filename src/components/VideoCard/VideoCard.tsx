@@ -12,6 +12,7 @@ interface VideoCardProps {
   category: string;
   isNew?: boolean;
   onClick?: () => void;
+  viewMode?: "grid" | "list";
 }
 
 const VideoCard = ({ 

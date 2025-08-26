@@ -1,81 +1,194 @@
 import { useState } from "react";
+import { Grid3X3, List, Search } from "lucide-react";
 import Header from "@/components/Layout/Header";
 import VideoCard from "@/components/VideoCard/VideoCard";
+import FilterTabs from "@/components/FilterTabs/FilterTabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { mockProducts } from "@/data/mockData";
-import { Card, CardContent } from "@/components/ui/card";
+
+// Mock new launches data - mix of products and individual videos
+const newLaunches = [
+  // New products
+  ...mockProducts.filter(p => p.isNew),
+  // New individual videos (could be from any product)
+  {
+    id: "new-video-1",
+    title: "Advanced CRM Analytics Dashboard",
+    description: "Explore the new analytics dashboard features",
+    category: "Sales",
+    thumbnail: "/src/assets/thumbnails/crm.jpg",
+    totalDuration: "18:45",
+    lessonCount: 1,
+    isNew: true,
+    type: "video", // Individual video
+    videos: []
+  },
+  {
+    id: "new-video-2", 
+    title: "Quick Setup Guide for E-commerce",
+    description: "Get your store running in under 10 minutes",
+    category: "Commerce",
+    thumbnail: "/src/assets/thumbnails/ecommerce.jpg",
+    totalDuration: "9:30",
+    lessonCount: 1,
+    isNew: true,
+    type: "video",
+    videos: []
+  }
+];
+
+const categories = [
+  { id: "all", label: "All", count: newLaunches.length },
+  { id: "products", label: "Products", count: newLaunches.filter((item: any) => item.type !== "video").length },
+  { id: "videos", label: "Videos", count: newLaunches.filter((item: any) => item.type === "video").length },
+  { id: "sales", label: "Sales", count: newLaunches.filter((item: any) => item.category === "Sales").length },
+  { id: "commerce", label: "Commerce", count: newLaunches.filter((item: any) => item.category === "Commerce").length },
+];
 
 const NewLaunches = () => {
-  // Mock new products - in real app, would filter by launch date from Supabase
-  const [newProducts] = useState(mockProducts.slice(0, 6));
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(["all"]);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleCategoryToggle = (categoryId: string) => {
+    if (categoryId === "all") {
+      setSelectedCategories(["all"]);
+    } else {
+      const newCategories = selectedCategories.includes("all") 
+        ? [categoryId]
+        : selectedCategories.includes(categoryId)
+          ? selectedCategories.filter(id => id !== categoryId)
+          : [...selectedCategories.filter(id => id !== "all"), categoryId];
+      
+      setSelectedCategories(newCategories.length === 0 ? ["all"] : newCategories);
+    }
+  };
+
+  const filteredLaunches = newLaunches.filter((item: any) => {
+    const matchesCategory = selectedCategories.includes("all") || 
+      selectedCategories.some(cat => 
+        cat === "products" && item.type !== "video" ||
+        cat === "videos" && item.type === "video" ||
+        cat.toLowerCase() === item.category.toLowerCase()
+      );
+    
+    const matchesSearch = searchQuery === "" || 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+  });
+
+  const handleCardClick = (item: any) => {
+    if (item.type === "video") {
+      // Navigate to video player for individual videos
+      window.location.href = `/video/new-launches/${item.id}`;
+    } else {
+      // Navigate to product detail page for products
+      window.location.href = `/product/${item.id}`;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
       <div className="container mx-auto px-4 lg:px-8 py-6">
-        {/* Hero Section */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            New Launches
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover our latest product demos and tutorials. Stay ahead with cutting-edge features and capabilities.
-          </p>
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-8 animate-fade-in">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              New Launches
+            </h1>
+            <p className="text-muted-foreground">
+              Discover the latest products and videos added to our platform
+            </p>
+          </div>
+          <Badge variant="secondary" className="bg-hero text-hero-foreground">
+            {filteredLaunches.length} New Items
+          </Badge>
         </div>
 
-        {/* New Products Grid */}
-        {newProducts.length === 0 ? (
-          <Card className="max-w-md mx-auto">
-            <CardContent className="p-12 text-center">
-              <h3 className="text-lg font-semibold text-foreground mb-2">No New Launches Yet</h3>
-              <p className="text-muted-foreground">
-                Stay tuned for exciting new product releases and tutorials.
-              </p>
-            </CardContent>
-          </Card>
+        {/* Filters */}
+        <FilterTabs
+          activeFilter={selectedCategories[0] || "all"}
+          onFilterChange={handleCategoryToggle}
+          filters={categories}
+        />
+
+        {/* View Controls */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center border rounded-lg p-1">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="h-8"
+              >
+                <Grid3X3 className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="h-8"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
+            <Badge variant="secondary">
+              {filteredLaunches.length} items
+            </Badge>
+          </div>
+
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search new launches..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 rounded-full"
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        {filteredLaunches.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-muted-foreground mb-4">
+              {searchQuery ? "No new launches found matching your search." : "No new launches available."}
+            </p>
+            {searchQuery && (
+              <Button variant="outline" onClick={() => setSearchQuery("")}>
+                Clear Search
+              </Button>
+            )}
+          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in delay-200">
-            {newProducts.map((product, index) => (
-              <div key={product.id} className="relative">
-                <VideoCard
-                  id={product.id}
-                  title={product.title}
-                  thumbnail={product.thumbnail}
-                  duration={product.videos?.[0]?.duration || "0:00"}
-                  lessonCount={product.lessonCount}
-                  category={product.category}
-                  isNew={true}
-                />
-                {/* Shiny "New" Badge */}
-                <div className="absolute -top-2 -right-2 z-10">
-                  <div className="relative">
-                    <div className="w-16 h-16 bg-gradient-to-br from-hero via-hero-hover to-hero rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-xs font-bold text-hero-foreground">NEW</span>
-                    </div>
-                    {/* Shine effect */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/30 to-transparent animate-pulse"></div>
-                  </div>
-                </div>
-              </div>
+          <div className={
+            viewMode === "grid" 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in delay-200" 
+              : "space-y-4 animate-fade-in delay-200"
+          }>
+            {filteredLaunches.map((item: any) => (
+              <VideoCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                thumbnail={item.thumbnail}
+                duration={item.totalDuration}
+                lessonCount={item.lessonCount}
+                category={item.category}
+                isNew={item.isNew}
+                onClick={() => handleCardClick(item)}
+                viewMode={viewMode}
+              />
             ))}
           </div>
         )}
-
-        {/* Call to Action */}
-        <div className="text-center mt-16">
-          <h2 className="text-2xl font-bold text-foreground mb-4">
-            Looking for something specific?
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            Browse our complete library of product demos and tutorials.
-          </p>
-          <a
-            href="/"
-            className="inline-flex items-center px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
-          >
-            Explore All Products
-          </a>
-        </div>
       </div>
     </div>
   );
