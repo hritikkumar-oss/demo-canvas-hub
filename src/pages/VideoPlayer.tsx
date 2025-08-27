@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Menu, Play, Share2, ArrowLeft } from "lucide-react";
 import Header from "@/components/Layout/Header";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { mockProducts } from "@/data/mockData";
 
 const VideoPlayer = () => {
   const { productId, videoId } = useParams();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const product = mockProducts.find(p => p.id === productId);
@@ -33,8 +35,7 @@ const VideoPlayer = () => {
   const lessons = product.videos;
 
   const handleLessonClick = (lessonId: string) => {
-    // Would navigate to the selected lesson
-    console.log(`Navigate to lesson: ${lessonId}`);
+    navigate(`/video/${productId}/${lessonId}`);
   };
 
   return (
@@ -43,7 +44,7 @@ const VideoPlayer = () => {
       
       <div className="flex h-[calc(100vh-80px)]">
         {/* Dark Fixed Sidebar */}
-        <div className="w-80 bg-gray-900 border-r border-gray-800 flex-shrink-0 overflow-hidden">\
+        <div className="w-80 bg-gray-900 border-r border-gray-800 flex-shrink-0 overflow-hidden">
           <div className="h-full flex flex-col">
             {/* Sidebar Header */}
             <div className="p-4 border-b border-gray-800 sticky top-0 z-10 bg-gray-900">
@@ -158,13 +159,20 @@ const VideoPlayer = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     {currentVideoIndex > 0 && (
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleLessonClick(lessons[currentVideoIndex - 1].id)}
+                      >
                         <ChevronLeft className="w-4 h-4 mr-2" />
                         Previous
                       </Button>
                     )}
                     {currentVideoIndex < lessons.length - 1 && (
-                      <Button size="sm">
+                      <Button 
+                        size="sm"
+                        onClick={() => handleLessonClick(lessons[currentVideoIndex + 1].id)}
+                      >
                         Next
                         <ChevronRight className="w-4 h-4 ml-2" />
                       </Button>
