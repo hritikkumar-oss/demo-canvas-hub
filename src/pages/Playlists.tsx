@@ -60,7 +60,7 @@ const Playlists = () => {
   ]);
 
   const handlePlaylistClick = (playlistId: string) => {
-    navigate(`/playlist/${playlistId}`);
+    navigate(`/playlists/${playlistId}`);
   };
 
   return (
