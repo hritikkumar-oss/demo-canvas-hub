@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Copy, UserPlus, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,7 +85,7 @@ const ShareModal = ({ isOpen, onClose, type, title, itemId }: ShareModalProps) =
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4">
       <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto animate-scale-in bg-background shadow-2xl">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
@@ -186,7 +187,8 @@ const ShareModal = ({ isOpen, onClose, type, title, itemId }: ShareModalProps) =
           </Tabs>
         </CardContent>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 };
 
