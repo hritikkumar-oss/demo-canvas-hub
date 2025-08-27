@@ -45,16 +45,17 @@ const generateMockVideos = (productId: string, thumbnail: string, count: number 
   const videoTopics = [
     "Introduction and Setup", "Basic Configuration", "Advanced Features", "Best Practices",
     "Integration Guide", "Troubleshooting", "Performance Optimization", "Security Settings",
-    "Advanced Customization", "Expert Tips and Tricks"
+    "Advanced Customization", "Expert Tips and Tricks", "API Integration", "Data Management",
+    "User Interface Design", "Mobile Optimization", "Analytics Setup", "Payment Processing"
   ];
 
   return Array.from({ length: Math.min(count, videoTopics.length) }, (_, index) => ({
     id: `${productId}-video-${index + 1}`,
     title: `${videoTopics[index]}`,
-    description: `Learn about ${videoTopics[index].toLowerCase()} in this comprehensive tutorial`,
+    description: `Learn about ${videoTopics[index].toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
     duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
     thumbnail,
-    videoUrl: `https://www.youtube.com/embed/dQw4w9WgXcQ?si=example${index}`,
+    videoUrl: `https://www.youtube.com/embed/dQw4w9WgXcQ?si=${productId}${index}&autoplay=0&rel=0`,
     productId,
     createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     isNew: Math.random() > 0.7
@@ -158,9 +159,9 @@ export const categories = [
 // Mock playlists data
 export const mockPlaylists: Playlist[] = [
   {
-    id: "playlist-1",
-    name: "Getting Started Collection",
-    description: "Essential tutorials for new users",
+    id: "1",
+    name: "Getting Started Collection", 
+    description: "Essential tutorials for new users to get up and running quickly",
     coverThumbnailUrl: gettingStartedThumb,
     videoCount: 5,
     totalDuration: "45 minutes",
@@ -169,15 +170,37 @@ export const mockPlaylists: Playlist[] = [
     videos: mockProducts[0].videos.slice(0, 5)
   },
   {
-    id: "playlist-2", 
+    id: "2", 
     name: "Advanced Sales Tools",
-    description: "Master CRM and POS systems",
+    description: "Master CRM and POS systems for maximum sales efficiency",
     coverThumbnailUrl: crmThumb,
     videoCount: 8,
     totalDuration: "1 hour 22 minutes",
-    createdBy: "admin",
+    createdBy: "admin", 
     createdAt: "2024-01-20T14:30:00Z",
-    videos: [...mockProducts[1].videos.slice(0, 4), ...mockProducts[5].videos.slice(0, 4)]
+    videos: [...mockProducts[1].videos.slice(0, 4), ...mockProducts[6].videos.slice(0, 4)]
+  },
+  {
+    id: "3",
+    name: "eCommerce Mastery",
+    description: "Complete guide to building and managing your online store",
+    coverThumbnailUrl: ecommerceThumb,
+    videoCount: 6,
+    totalDuration: "58 minutes",
+    createdBy: "admin",
+    createdAt: "2024-01-25T09:15:00Z", 
+    videos: mockProducts[2].videos.slice(0, 6)
+  },
+  {
+    id: "4",
+    name: "Website Design Fundamentals", 
+    description: "Learn to create stunning websites with drag-and-drop tools",
+    coverThumbnailUrl: websiteThumb,
+    videoCount: 7,
+    totalDuration: "1 hour 12 minutes",
+    createdBy: "admin",
+    createdAt: "2024-02-01T16:45:00Z",
+    videos: mockProducts[3].videos.slice(0, 7)
   }
 ];
 
