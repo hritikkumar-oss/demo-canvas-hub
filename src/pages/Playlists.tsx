@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Play, Clock, BookOpen } from "lucide-react";
 import Header from "@/components/Layout/Header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +17,8 @@ interface Playlist {
 }
 
 const Playlists = () => {
+  const navigate = useNavigate();
+  
   // Mock playlists - would come from Supabase
   const [playlists] = useState<Playlist[]>([
     {
@@ -57,8 +60,7 @@ const Playlists = () => {
   ]);
 
   const handlePlaylistClick = (playlistId: string) => {
-    // Would navigate to playlist detail page
-    console.log(`Navigate to playlist: ${playlistId}`);
+    navigate(`/playlist/${playlistId}`);
   };
 
   return (
