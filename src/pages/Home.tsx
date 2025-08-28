@@ -13,7 +13,7 @@ const Home = () => {
     { id: "sales", label: "Sales", count: 2 },
     { id: "commerce", label: "Commerce", count: 1 },
     { id: "design", label: "Design", count: 1 },
-    { id: "finance", label: "Finance", count: 0 },
+    { id: "finance", label: "Finance", count: 1 },
   ];
 
   const filteredProducts = mockProducts.filter(product => {
