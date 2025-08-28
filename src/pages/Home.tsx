@@ -33,19 +33,19 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary via-hero to-primary-hover text-white py-16">
-        <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Which feature/Product would you like<br />
-            <span className="text-white/90">to know more about?</span>
-          </h1>
-          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto animate-fade-in delay-200">
-            Discover comprehensive tutorials and demos for all our products. 
-            Learn at your own pace with our expertly crafted video content.
-          </p>
-        </div>
-      </section>
+     {/* Hero Section (updated background + smaller text) */}
+<section className="bg-[#C5F0EE] py-20 text-center">
+  <div className="container mx-auto px-4 lg:px-8">
+    <h1 className="text-3xl md:text-5xl font-bold leading-snug mb-6 animate-fade-in text-slate-900">
+      Which feature/Product would you like<br />
+      <span className="text-slate-800/90">to know more about?</span>
+    </h1>
+    <p className="text-base md:text-lg text-slate-700 mb-8 max-w-xl mx-auto animate-fade-in delay-200">
+      Discover comprehensive tutorials and demos for all our products. 
+      Learn at your own pace with our expertly crafted video content.
+    </p>
+  </div>
+</section>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 lg:px-8 py-12">
