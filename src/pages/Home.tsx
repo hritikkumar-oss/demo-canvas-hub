@@ -10,7 +10,7 @@ const Home = () => {
 
   const filters = [
     { id: "all", label: "All Products", count: mockProducts.length },
-    { id: "sales", label: "Sales", count: 2 },
+    { id: "sales", label: "SFA", count: 2 },
     { id: "commerce", label: "Commerce", count: 1 },
     { id: "design", label: "Design", count: 1 },
     { id: "finance", label: "Finance", count: 1 },
