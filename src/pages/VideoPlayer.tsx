@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Menu, Play, Share2, ArrowLeft } from "lucide-react";
 import Header from "@/components/Layout/Header";
@@ -15,6 +15,11 @@ const VideoPlayer = () => {
   const product = mockProducts.find(p => p.id === productId);
   const video = product?.videos.find(v => v.id === videoId);
   const currentVideoIndex = product?.videos.findIndex(v => v.id === videoId) ?? 0;
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!product || !video) {
     return (

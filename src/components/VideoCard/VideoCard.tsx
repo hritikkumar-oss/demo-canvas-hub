@@ -12,6 +12,7 @@ interface VideoCardProps {
   category: string;
   isNew?: boolean;
   onClick?: () => void;
+  viewMode?: "grid" | "list";
 }
 
 const VideoCard = ({ 
@@ -22,7 +23,8 @@ const VideoCard = ({
   lessonCount, 
   category, 
   isNew, 
-  onClick 
+  onClick,
+  viewMode = "grid"
 }: VideoCardProps) => {
   const navigate = useNavigate();
 
@@ -33,6 +35,69 @@ const VideoCard = ({
       navigate(`/product/${id}`);
     }
   };
+  if (viewMode === "list") {
+    return (
+      <Card 
+        className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 animate-fade-in"
+        onClick={handleClick}
+      >
+        <CardContent className="p-4">
+          <div className="flex gap-4">
+            {/* Thumbnail Container */}
+            <div className="relative w-32 h-20 flex-shrink-0 overflow-hidden rounded-lg">
+              <img
+                src={thumbnail}
+                alt={title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              
+              {/* Play Overlay */}
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <div className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                  <Play className="w-3 h-3 text-primary ml-0.5" fill="currentColor" />
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                    {title}
+                  </h3>
+                  <div className="flex gap-2 flex-shrink-0">
+                    {isNew && (
+                      <Badge variant="destructive" className="bg-hero text-hero-foreground hover:bg-hero-hover text-xs">
+                        New
+                      </Badge>
+                    )}
+                    <Badge variant="secondary" className="bg-white/90 text-foreground text-xs">
+                      {category}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center text-sm text-muted-foreground">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-1">
+                    <Clock className="w-4 h-4" />
+                    <span>{duration}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <BookOpen className="w-4 h-4" />
+                    <span>{lessonCount} lessons</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card 
       className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 animate-fade-in h-full flex flex-col"

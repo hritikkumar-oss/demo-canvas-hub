@@ -1,8 +1,9 @@
-import { Search, Menu, User, Share2 } from "lucide-react";
+import { Search, Menu, User, Share2, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import ShareModal from "@/components/ShareModal";
 
 interface HeaderProps {
@@ -14,6 +15,8 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut, isAdmin } = useAuth();
 
   const isActivePath = (path: string) => location.pathname === path;
 
@@ -55,14 +58,16 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
             >
               Playlists
             </Link>
-            <Link 
-              to="/admin" 
-              className={`transition-colors font-medium ${
-                isActivePath('/admin') ? 'text-primary' : 'text-foreground hover:text-primary'
-              }`}
-            >
-              Admin
-            </Link>
+            {isAdmin && (
+              <Link 
+                to="/admin" 
+                className={`transition-colors font-medium ${
+                  isActivePath('/admin') ? 'text-primary' : 'text-foreground hover:text-primary'
+                }`}
+              >
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Search Bar */}
@@ -96,10 +101,28 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
             <Button variant="ghost" size="icon" className="lg:hidden">
               <Search className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4 mr-2" />
-              Login
-            </Button>
+            {user ? (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={async () => {
+                  await signOut();
+                  navigate('/');
+                }}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/login')}
+              >
+                <User className="h-4 w-4 mr-2" />
+                Login
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -124,9 +147,11 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Playlists
               </Link>
-              <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                Admin
-              </Link>
+              {isAdmin && (
+                <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                  Admin
+                </Link>
+              )}
               <div className="pt-2">
                 <Input
                   placeholder="Search products, tutorials..."

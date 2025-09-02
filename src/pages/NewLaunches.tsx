@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Play, Folder, Filter } from "lucide-react";
 import Header from "@/components/Layout/Header";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,11 @@ import { getNewLaunches } from "@/data/mockData";
 
 const NewLaunches = () => {
   const { newProducts, newVideos } = getNewLaunches();
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">

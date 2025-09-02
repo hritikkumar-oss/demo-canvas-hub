@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Play, Clock, BookOpen } from "lucide-react";
 import Header from "@/components/Layout/Header";
@@ -18,6 +18,11 @@ interface Playlist {
 
 const Playlists = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
   
   // Mock playlists - would come from Supabase
   const [playlists] = useState<Playlist[]>([

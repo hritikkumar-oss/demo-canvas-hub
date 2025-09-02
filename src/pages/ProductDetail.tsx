@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Layout/Header";
 import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
@@ -12,12 +12,17 @@ const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const product = mockProducts.find(p => p.id === productId);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] = useState<{id: string, title: string} | null>(null);
 
   const firstVideo = product?.videos?.[0];
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!product) {
     return (

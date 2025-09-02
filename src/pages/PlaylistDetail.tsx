@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Share2, Search, Grid3X3, List, Play } from "lucide-react";
 import Header from "@/components/Layout/Header";
@@ -16,6 +16,11 @@ const PlaylistDetail = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const playlist = mockPlaylists.find(p => p.id === playlistId);
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!playlist) {
     return (

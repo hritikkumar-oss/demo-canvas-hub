@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header from "@/components/Layout/Header";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,11 @@ const TutorialViewer = () => {
   const product = mockProducts.find(p => p.id === productId);
   const video = product?.videos.find(v => v.id === videoId);
   const currentVideoIndex = product?.videos.findIndex(v => v.id === videoId) ?? 0;
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!product || !video) {
     return (

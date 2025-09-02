@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Layout/Header";
 import VideoCard from "@/components/VideoCard/VideoCard";
 import FilterTabs from "@/components/FilterTabs/FilterTabs";
 import { mockProducts, categories } from "@/data/mockData";
+import { Button } from "@/components/ui/button";
+import { Grid, List } from "lucide-react";
 
 const Home = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   const filters = [
     { id: "all", label: "All Products", count: mockProducts.length },
@@ -49,17 +57,45 @@ const Home = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 lg:px-8 py-12">
-        {/* Filter Tabs */}
+        {/* Filter Tabs and View Toggle */}
         <div className="animate-fade-in delay-300">
-          <FilterTabs
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-            filters={filters}
-          />
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <FilterTabs
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
+              filters={filters}
+            />
+            
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">View:</span>
+              <div className="flex border rounded-lg p-1">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-8 px-3"
+                  onClick={() => setViewMode("grid")}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-8 px-3"
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Product Grid/List */}
+        <div className={viewMode === "grid" 
+          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+          : "flex flex-col gap-4"
+        }>
           {filteredProducts.map((product, index) => (
             <div
               key={product.id}
@@ -74,6 +110,7 @@ const Home = () => {
                 lessonCount={product.lessonCount}
                 category={product.category}
                 isNew={product.isNew}
+                viewMode={viewMode}
               />
             </div>
           ))}
