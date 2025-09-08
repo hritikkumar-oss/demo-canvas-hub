@@ -25,12 +25,13 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-hero flex items-center justify-center">
-              <span className="text-white font-bold text-sm">VP</span>
-            </div>
-            <span className="font-semibold text-lg text-foreground">VideoPortal</span>
-          </div>
+          <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
+            <img 
+              src="/lovable-uploads/e034b324-e49a-4ea8-9cb1-9222a945fe38.png" 
+              alt="salescode.ai Demo" 
+              className="h-10 w-auto"
+            />
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
