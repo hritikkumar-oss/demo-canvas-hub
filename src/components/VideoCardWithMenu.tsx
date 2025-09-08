@@ -10,7 +10,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { type Video } from "@/data/mockData";
-import ShareModal from "@/components/ShareModal";
+import InviteModal from "@/components/InviteModal";
 import PlaylistModal from "@/components/PlaylistModal";
 
 interface VideoCardWithMenuProps {
@@ -20,7 +20,7 @@ interface VideoCardWithMenuProps {
 }
 
 const VideoCardWithMenu = ({ video, isListView = false, showProductName = false }: VideoCardWithMenuProps) => {
-  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const { toast } = useToast();
 
@@ -83,9 +83,9 @@ const VideoCardWithMenu = ({ video, isListView = false, showProductName = false 
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => setShareModalOpen(true)}>
+            <DropdownMenuItem onClick={() => setInviteModalOpen(true)}>
               <Share2 className="w-4 h-4 mr-2" />
-              Share
+              Invite
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleCopyLink}>
               <Copy className="w-4 h-4 mr-2" />
@@ -98,9 +98,9 @@ const VideoCardWithMenu = ({ video, isListView = false, showProductName = false 
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <ShareModal
-          isOpen={shareModalOpen}
-          onClose={() => setShareModalOpen(false)}
+        <InviteModal
+          isOpen={inviteModalOpen}
+          onClose={() => setInviteModalOpen(false)}
           type="video"
           title={video.title}
           itemId={`${video.productId}/${video.id}`}
@@ -163,9 +163,9 @@ const VideoCardWithMenu = ({ video, isListView = false, showProductName = false 
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => setShareModalOpen(true)}>
+              <DropdownMenuItem onClick={() => setInviteModalOpen(true)}>
                 <Share2 className="w-4 h-4 mr-2" />
-                Share
+                Invite
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleCopyLink}>
                 <Copy className="w-4 h-4 mr-2" />
@@ -180,9 +180,9 @@ const VideoCardWithMenu = ({ video, isListView = false, showProductName = false 
         </div>
       </div>
 
-      <ShareModal
-        isOpen={shareModalOpen}
-        onClose={() => setShareModalOpen(false)}
+      <InviteModal
+        isOpen={inviteModalOpen}
+        onClose={() => setInviteModalOpen(false)}
         type="video"
         title={video.title}
         itemId={`${video.productId}/${video.id}`}

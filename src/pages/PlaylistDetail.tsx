@@ -6,14 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { mockPlaylists } from "@/data/mockData";
 import VideoCardWithMenu from "@/components/VideoCardWithMenu";
-import ShareModal from "@/components/ShareModal";
+import InviteModal from "@/components/InviteModal";
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   const playlist = mockPlaylists.find(p => p.id === playlistId);
 
@@ -61,11 +61,11 @@ const PlaylistDetail = () => {
             
             <Button
               variant="outline"
-              onClick={() => setShareModalOpen(true)}
+              onClick={() => setInviteModalOpen(true)}
               className="rounded-full"
             >
               <Share2 className="w-4 h-4 mr-2" />
-              Share Playlist
+              Invite to Playlist
             </Button>
           </div>
 
@@ -155,9 +155,9 @@ const PlaylistDetail = () => {
         )}
       </div>
 
-      <ShareModal
-        isOpen={shareModalOpen}
-        onClose={() => setShareModalOpen(false)}
+      <InviteModal
+        isOpen={inviteModalOpen}
+        onClose={() => setInviteModalOpen(false)}
         type="playlist"
         title={playlist.name}
         itemId={playlist.id}

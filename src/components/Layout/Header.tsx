@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import ShareModal from "@/components/ShareModal";
+import InviteModal from "@/components/InviteModal";
 
 interface HeaderProps {
   searchQuery?: string;
@@ -13,7 +13,7 @@ interface HeaderProps {
 
 const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut, isAdmin } = useAuth();
@@ -89,10 +89,10 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               variant="outline" 
               size="sm" 
               className="rounded-full"
-              onClick={() => setShareModalOpen(true)}
+              onClick={() => setInviteModalOpen(true)}
             >
               <Share2 className="w-4 h-4 mr-2" />
-              Share
+              Invite
             </Button>
           </div>
 
@@ -163,20 +163,20 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => setShareModalOpen(true)}
+                onClick={() => setInviteModalOpen(true)}
                 className="self-start"
               >
                 <Share2 className="w-4 h-4 mr-2" />
-                Share
+                Invite
               </Button>
             </nav>
           </div>
         )}
       </div>
       
-      <ShareModal
-        isOpen={shareModalOpen}
-        onClose={() => setShareModalOpen(false)}
+      <InviteModal
+        isOpen={inviteModalOpen}
+        onClose={() => setInviteModalOpen(false)}
         type="global"
       />
     </header>

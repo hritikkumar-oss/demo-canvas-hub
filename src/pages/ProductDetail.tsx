@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Layout/Header";
 import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
 import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
-import ShareModal from "@/components/ShareModal";
+import InviteModal from "@/components/InviteModal";
 import { Button } from "@/components/ui/button";
 import { mockProducts } from "@/data/mockData";
 import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
@@ -14,7 +14,7 @@ const ProductDetail = () => {
   const product = mockProducts.find(p => p.id === productId);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
-  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] = useState<{id: string, title: string} | null>(null);
 
   const firstVideo = product?.videos?.[0];
@@ -59,10 +59,10 @@ const ProductDetail = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => setShareModalOpen(true)}
+                onClick={() => setInviteModalOpen(true)}
               >
                 <Share2 className="w-4 h-4 mr-2" />
-                Share Product
+                Invite to Product
               </Button>
             </div>
             
@@ -199,10 +199,10 @@ const ProductDetail = () => {
         />
       )}
 
-      {/* Share Modal */}
-      <ShareModal
-        isOpen={shareModalOpen}
-        onClose={() => setShareModalOpen(false)}
+      {/* Invite Modal */}
+      <InviteModal
+        isOpen={inviteModalOpen}
+        onClose={() => setInviteModalOpen(false)}
         type="product"
         title={product?.title}
         itemId={productId}

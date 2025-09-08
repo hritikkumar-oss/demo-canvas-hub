@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export type AuthUser = User & {
   user_metadata?: {
-    role?: 'admin' | 'view-only';
+    role?: 'admin' | 'viewer';
   };
 };
 
@@ -50,43 +50,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    // Check for admin credentials
-    const isAdminCredentials = email === 'business@salescode.ai' && password === 'Salescode123#';
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     
-    if (isAdminCredentials) {
-      // For admin, we'll use a special admin account or create one
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (!error && data.user) {
-        // Set admin role in user metadata
-        const updatedUser = {
-          ...data.user,
-          user_metadata: { ...data.user.user_metadata, role: 'admin' }
-        } as AuthUser;
-        setUser(updatedUser);
-      }
-      
-      return { error };
-    } else {
-      // For other users, sign in normally and set view-only role
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (!error && data.user) {
-        const updatedUser = {
-          ...data.user,
-          user_metadata: { ...data.user.user_metadata, role: 'view-only' }
-        } as AuthUser;
-        setUser(updatedUser);
-      }
-      
-      return { error };
+    if (!error && data.user) {
+      // Use the role from user metadata (set during invite process or admin setup)
+      const role = data.user.user_metadata?.role || 'viewer';
+      const updatedUser = {
+        ...data.user,
+        user_metadata: { ...data.user.user_metadata, role }
+      } as AuthUser;
+      setUser(updatedUser);
     }
+    
+    return { error };
   };
 
   const signUp = async (email: string, password: string) => {
@@ -95,8 +74,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       password,
       options: {
         data: {
-          role: 'view-only'
-        }
+          role: 'viewer'
+        },
+        emailRedirectTo: `${window.location.origin}/`
       }
     });
     return { error };
@@ -109,7 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const isAdmin = user?.user_metadata?.role === 'admin' || (user && 'email' in user && user.email === 'business@salescode.ai');
+  const isAdmin = user?.user_metadata?.role === 'admin';
 
   const value = {
     user,

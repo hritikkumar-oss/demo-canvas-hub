@@ -14,7 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      invites: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invite_type: string
+          invited_by: string | null
+          name: string | null
+          resource_id: string | null
+          resource_type: string | null
+          status: string | null
+          token: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invite_type: string
+          invited_by?: string | null
+          name?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          status?: string | null
+          token?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invite_type?: string
+          invited_by?: string | null
+          name?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          status?: string | null
+          token?: string | null
+        }
+        Relationships: []
+      }
+      otp_verifications: {
+        Row: {
+          created_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          otp_code: string
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          otp_code: string
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          otp_code?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
