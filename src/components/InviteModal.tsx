@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+
 import { supabase } from "@/integrations/supabase/client";
 
 interface InviteModalProps {
@@ -23,12 +23,11 @@ const InviteModal = ({ isOpen, onClose, type, title, itemId }: InviteModalProps)
   const [inviteForm, setInviteForm] = useState({
     email: "",
     name: "",
-    role: "viewer" as "admin" | "viewer",
     message: ""
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { isAdmin } = useAuth();
+  
 
   if (!isOpen) return null;
 
@@ -58,7 +57,7 @@ const InviteModal = ({ isOpen, onClose, type, title, itemId }: InviteModalProps)
         body: JSON.stringify({
           email: inviteForm.email,
           name: inviteForm.name || undefined,
-          inviteType: inviteForm.role,
+          inviteType: "viewer",
           resourceType: type === "global" ? undefined : type,
           resourceId: type === "global" ? undefined : itemId,
           resourceTitle: title,
@@ -77,7 +76,7 @@ const InviteModal = ({ isOpen, onClose, type, title, itemId }: InviteModalProps)
         description: `Invitation sent to ${inviteForm.email}`,
       });
 
-      setInviteForm({ email: "", name: "", role: "viewer", message: "" });
+      setInviteForm({ email: "", name: "", message: "" });
       onClose();
     } catch (error: any) {
       console.error("Error sending invite:", error);
@@ -143,27 +142,6 @@ const InviteModal = ({ isOpen, onClose, type, title, itemId }: InviteModalProps)
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="invite-role">Role</Label>
-            <Select 
-              value={inviteForm.role}
-              onValueChange={(value: "admin" | "viewer") => setInviteForm(prev => ({ ...prev, role: value }))}
-              disabled={!isAdmin}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="viewer">View-Only</SelectItem>
-                {isAdmin && <SelectItem value="admin">Admin</SelectItem>}
-              </SelectContent>
-            </Select>
-            {!isAdmin && (
-              <p className="text-xs text-muted-foreground">
-                Only admins can invite other admins
-              </p>
-            )}
-          </div>
 
           <div className="space-y-2">
             <Label htmlFor="invite-message">Message (Optional)</Label>

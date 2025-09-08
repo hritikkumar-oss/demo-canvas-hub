@@ -16,7 +16,7 @@ import PlaylistDetail from "./pages/PlaylistDetail";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
-import InviteAccept from "./pages/InviteAccept";
+import AuthGate from "./pages/AuthGate";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +28,7 @@ const App = () => (
           <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/invite/:token" element={<InviteAccept />} />
+              <Route path="/invite/:token" element={<AuthGate />} />
               <Route path="/" element={<Home />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/product/:productId/tutorial/:videoId" element={<TutorialViewer />} />
