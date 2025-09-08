@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import AuthGate from "./pages/AuthGate";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -26,9 +27,10 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/invite/:token" element={<AuthGate />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/invite/:token" element={<AuthGate />} />
               <Route path="/" element={<Home />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/product/:productId/tutorial/:videoId" element={<TutorialViewer />} />
