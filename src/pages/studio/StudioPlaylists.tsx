@@ -12,14 +12,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye, List } from 'lucide-react';
 import { AddPlaylistModal } from '@/components/studio/AddPlaylistModal';
+import { PlaylistDetailModal } from '@/components/studio/PlaylistDetailModal';
 import { useToast } from '@/hooks/use-toast';
 import { Playlist } from '@/data/mockData';
 
 const StudioPlaylists: React.FC = () => {
-  const { playlists } = useData();
+  const { playlists, deletePlaylist } = useData();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const filteredPlaylists = playlists.filter(playlist =>
     playlist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -27,10 +30,16 @@ const StudioPlaylists: React.FC = () => {
   );
 
   const handleDeletePlaylist = (playlistId: string) => {
+    deletePlaylist(playlistId);
     toast({
       title: "Playlist deleted",
       description: "Playlist has been removed successfully.",
     });
+  };
+
+  const handleManageVideos = (playlist: Playlist) => {
+    setSelectedPlaylist(playlist);
+    setShowDetailModal(true);
   };
 
   return (
@@ -95,7 +104,7 @@ const StudioPlaylists: React.FC = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleManageVideos(playlist)}>
                       <List className="h-4 w-4 mr-2" />
                       Manage Videos
                     </DropdownMenuItem>
@@ -138,6 +147,13 @@ const StudioPlaylists: React.FC = () => {
       <AddPlaylistModal 
         open={showAddModal} 
         onOpenChange={setShowAddModal} 
+      />
+
+      {/* Playlist Detail Modal */}
+      <PlaylistDetailModal
+        playlist={selectedPlaylist}
+        open={showDetailModal}
+        onOpenChange={setShowDetailModal}
       />
     </div>
   );

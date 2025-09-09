@@ -3,16 +3,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Upload, FileVideo, Image, Trash2, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
+import { FileVideo, Image, Trash2, RotateCcw, CheckCircle, XCircle, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface UploadItem {
   id: string;
   name: string;
-  type: 'video' | 'image';
+  type: 'video' | 'thumbnail';
+  target: string;
   size: string;
   progress: number;
-  status: 'uploading' | 'completed' | 'failed';
+  status: 'uploading' | 'processing' | 'completed' | 'failed';
   preview?: string;
 }
 
@@ -20,25 +21,10 @@ const StudioUploads: React.FC = () => {
   const { toast } = useToast();
   const [uploads, setUploads] = useState<UploadItem[]>([
     {
-      id: '1',
-      name: 'advanced-features-tutorial.mp4',
-      type: 'video',
-      size: '125 MB',
-      progress: 100,
-      status: 'completed',
-    },
-    {
-      id: '2',
-      name: 'getting-started-thumbnail.jpg',
-      type: 'image',
-      size: '2.1 MB',
-      progress: 100,
-      status: 'completed',
-    },
-    {
       id: '3',
       name: 'setup-guide-video.mp4',
       type: 'video',
+      target: 'Getting Started Guide',
       size: '89 MB',
       progress: 65,
       status: 'uploading',
@@ -47,46 +33,23 @@ const StudioUploads: React.FC = () => {
       id: '4',
       name: 'broken-upload.mp4',
       type: 'video',
+      target: 'Advanced Features',
       size: '156 MB',
       progress: 0,
       status: 'failed',
     },
+    {
+      id: '5',
+      name: 'playlist-cover.jpg',
+      type: 'thumbnail',
+      target: 'My First Playlist',
+      size: '2.1 MB',
+      progress: 95,
+      status: 'processing',
+    },
   ]);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      Array.from(files).forEach(file => {
-        const newUpload: UploadItem = {
-          id: Date.now().toString() + Math.random(),
-          name: file.name,
-          type: file.type.startsWith('video/') ? 'video' : 'image',
-          size: formatFileSize(file.size),
-          progress: 0,
-          status: 'uploading',
-        };
-
-        // Create preview for images
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const result = e.target?.result as string;
-            setUploads(prev => prev.map(upload => 
-              upload.id === newUpload.id 
-                ? { ...upload, preview: result }
-                : upload
-            ));
-          };
-          reader.readAsDataURL(file);
-        }
-
-        setUploads(prev => [...prev, newUpload]);
-
-        // Simulate upload progress
-        simulateUpload(newUpload.id);
-      });
-    }
-  };
+  // Remove file upload functionality since uploads happen via modals
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -105,6 +68,10 @@ const StudioUploads: React.FC = () => {
           
           if (isComplete) {
             clearInterval(interval);
+            // Auto-remove completed uploads after 3 seconds
+            setTimeout(() => {
+              setUploads(prev => prev.filter(u => u.id !== id));
+            }, 3000);
             toast({
               title: "Upload completed",
               description: `${upload.name} has been uploaded successfully.`,
@@ -131,11 +98,11 @@ const StudioUploads: React.FC = () => {
     simulateUpload(id);
   };
 
-  const handleDelete = (id: string) => {
+  const handleCancel = (id: string) => {
     setUploads(prev => prev.filter(upload => upload.id !== id));
     toast({
-      title: "Upload removed",
-      description: "Upload has been removed from the queue.",
+      title: "Upload cancelled",
+      description: "Upload has been cancelled and removed from the queue.",
     });
   };
 
@@ -154,6 +121,8 @@ const StudioUploads: React.FC = () => {
     switch (status) {
       case 'uploading':
         return <Badge variant="outline">Uploading</Badge>;
+      case 'processing':
+        return <Badge variant="outline" className="bg-blue-100 text-blue-800">Processing</Badge>;
       case 'completed':
         return <Badge className="bg-green-100 text-green-800">Completed</Badge>;
       case 'failed':
@@ -166,109 +135,97 @@ const StudioUploads: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Uploads</h1>
-          <p className="text-muted-foreground mt-1">Manage your video and image uploads</p>
+          <h1 className="text-3xl font-bold text-foreground">Upload Queue</h1>
+          <p className="text-muted-foreground mt-1">Monitor ongoing uploads and processing</p>
         </div>
       </div>
-
-      {/* Upload Area */}
-      <Card>
-        <CardContent className="p-8">
-          <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-            <input
-              type="file"
-              id="file-upload"
-              multiple
-              accept="video/*,image/*"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Upload Files</h3>
-              <p className="text-muted-foreground mb-4">
-                Drag and drop your videos and images here, or click to browse
-              </p>
-              <Button>
-                <Upload className="h-4 w-4 mr-2" />
-                Choose Files
-              </Button>
-            </label>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Upload Queue */}
       <Card>
         <CardHeader>
-          <CardTitle>Upload Queue</CardTitle>
+          <CardTitle>Active Uploads</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {uploads.map((upload) => (
-            <div key={upload.id} className="flex items-center gap-4 p-4 border rounded-lg">
-              <div className="flex-shrink-0">
-                {upload.type === 'video' ? (
-                  <FileVideo className="h-8 w-8 text-blue-500" />
-                ) : upload.preview ? (
-                  <img 
-                    src={upload.preview} 
-                    alt="Preview" 
-                    className="w-12 h-8 object-cover rounded aspect-video"
-                  />
-                ) : (
-                  <Image className="h-8 w-8 text-green-500" />
-                )}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium truncate">{upload.name}</h4>
-                  <div className="flex items-center gap-2">
-                    {getStatusBadge(upload.status)}
-                    {getStatusIcon(upload.status)}
-                  </div>
+        <CardContent>
+          <div className="space-y-4">
+            {uploads.map((upload) => (
+              <div key={upload.id} className="grid grid-cols-12 gap-4 p-4 border rounded-lg items-center">
+                {/* File Icon */}
+                <div className="col-span-1">
+                  {upload.type === 'video' ? (
+                    <FileVideo className="h-6 w-6 text-blue-500" />
+                  ) : (
+                    <Image className="h-6 w-6 text-green-500" />
+                  )}
                 </div>
-                
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground">{upload.size}</span>
-                  {upload.status === 'uploading' && (
-                    <div className="flex-1 max-w-xs">
+
+                {/* File Name */}
+                <div className="col-span-3">
+                  <div className="font-medium truncate">{upload.name}</div>
+                  <div className="text-sm text-muted-foreground">{upload.size}</div>
+                </div>
+
+                {/* Type */}
+                <div className="col-span-1">
+                  <Badge variant="outline" className="capitalize">
+                    {upload.type}
+                  </Badge>
+                </div>
+
+                {/* Target */}
+                <div className="col-span-3">
+                  <div className="text-sm font-medium truncate">{upload.target}</div>
+                </div>
+
+                {/* Progress */}
+                <div className="col-span-2">
+                  {(upload.status === 'uploading' || upload.status === 'processing') && (
+                    <div className="space-y-1">
                       <Progress value={upload.progress} className="h-2" />
-                      <span className="text-xs text-muted-foreground">
+                      <div className="text-xs text-muted-foreground text-center">
                         {Math.round(upload.progress)}%
-                      </span>
+                      </div>
                     </div>
                   )}
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                {upload.status === 'failed' && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleRetry(upload.id)}
-                  >
-                    <RotateCcw className="h-4 w-4 mr-1" />
-                    Retry
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(upload.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                {/* Status & Actions */}
+                <div className="col-span-2 flex items-center justify-end gap-2">
+                  {getStatusBadge(upload.status)}
+                  {getStatusIcon(upload.status)}
+                  
+                  {upload.status === 'failed' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRetry(upload.id)}
+                    >
+                      <RotateCcw className="h-3 w-3" />
+                    </Button>
+                  )}
+                  
+                  {(upload.status === 'uploading' || upload.status === 'failed') && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleCancel(upload.id)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {uploads.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              No uploads in queue. Upload some files to get started.
-            </div>
-          )}
+            {uploads.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                <div className="mb-4">
+                  <FileVideo className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">No active uploads</h3>
+                <p>Files will appear here when you upload them via Add Video, Add Product, or Add Playlist modals.</p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>

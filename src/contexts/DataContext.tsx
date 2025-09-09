@@ -9,8 +9,13 @@ interface DataContextType {
   updatePlaylist: (id: string, updates: Partial<Playlist>) => void;
   addProduct: (product: Omit<Product, 'id'>) => void;
   addVideo: (productId: string, video: Omit<Video, 'id'>) => void;
+  addPlaylist: (playlist: Omit<Playlist, 'id'>) => void;
   deleteProduct: (id: string) => void;
   deleteVideo: (productId: string, videoId: string) => void;
+  deletePlaylist: (id: string) => void;
+  reorderProducts: (sourceIndex: number, destinationIndex: number) => void;
+  reorderVideos: (productId: string, sourceIndex: number, destinationIndex: number) => void;
+  reorderPlaylistVideos: (playlistId: string, sourceIndex: number, destinationIndex: number) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -96,6 +101,59 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     ));
   };
 
+  const addPlaylist = (playlist: Omit<Playlist, 'id'>) => {
+    const newPlaylist: Playlist = {
+      ...playlist,
+      id: `playlist-${Date.now()}`,
+    };
+    setPlaylists(prev => [...prev, newPlaylist]);
+  };
+
+  const deletePlaylist = (id: string) => {
+    setPlaylists(prev => prev.filter(playlist => playlist.id !== id));
+  };
+
+  const reorderProducts = (sourceIndex: number, destinationIndex: number) => {
+    setProducts(prev => {
+      const result = [...prev];
+      const [removed] = result.splice(sourceIndex, 1);
+      result.splice(destinationIndex, 0, removed);
+      return result;
+    });
+  };
+
+  const reorderVideos = (productId: string, sourceIndex: number, destinationIndex: number) => {
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? {
+            ...product,
+            videos: (() => {
+              const result = [...product.videos];
+              const [removed] = result.splice(sourceIndex, 1);
+              result.splice(destinationIndex, 0, removed);
+              return result;
+            })()
+          }
+        : product
+    ));
+  };
+
+  const reorderPlaylistVideos = (playlistId: string, sourceIndex: number, destinationIndex: number) => {
+    setPlaylists(prev => prev.map(playlist => 
+      playlist.id === playlistId 
+        ? {
+            ...playlist,
+            videos: (() => {
+              const result = [...playlist.videos];
+              const [removed] = result.splice(sourceIndex, 1);
+              result.splice(destinationIndex, 0, removed);
+              return result;
+            })()
+          }
+        : playlist
+    ));
+  };
+
   const value = {
     products,
     playlists,
@@ -104,8 +162,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     updatePlaylist,
     addProduct,
     addVideo,
+    addPlaylist,
     deleteProduct,
     deleteVideo,
+    deletePlaylist,
+    reorderProducts,
+    reorderVideos,
+    reorderPlaylistVideos,
   };
 
   return (

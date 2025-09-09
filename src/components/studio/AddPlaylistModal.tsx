@@ -22,7 +22,7 @@ interface AddPlaylistModalProps {
 }
 
 export const AddPlaylistModal: React.FC<AddPlaylistModalProps> = ({ open, onOpenChange }) => {
-  const { products } = useData();
+  const { products, addPlaylist } = useData();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
@@ -52,7 +52,19 @@ export const AddPlaylistModal: React.FC<AddPlaylistModalProps> = ({ open, onOpen
       selectedVideos.includes(video.id)
     );
 
-    // In a real app, this would call addPlaylist from DataContext
+    const newPlaylist = {
+      name: formData.name,
+      description: formData.description,
+      coverThumbnailUrl: formData.coverThumbnail || 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=225&fit=crop',
+      videos: selectedVideoObjects,
+      videoCount: selectedVideoObjects.length,
+      totalDuration: '0:00', // Could calculate from videos
+      createdAt: new Date().toISOString(),
+      createdBy: 'Admin', // Default creator for studio mode
+    };
+
+    addPlaylist(newPlaylist);
+
     toast({
       title: "Playlist created",
       description: `"${formData.name}" has been created with ${selectedVideoObjects.length} videos.`,
