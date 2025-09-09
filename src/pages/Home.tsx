@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Layout/Header";
 import VideoCard from "@/components/VideoCard/VideoCard";
-import EditableVideoCard from "@/components/EditableVideoCard";
 import FilterTabs from "@/components/FilterTabs/FilterTabs";
-import { useData } from "@/contexts/DataContext";
-import { useUserRole } from "@/hooks/useUserRole";
-import { categories } from "@/data/mockData";
+import { mockProducts, categories } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Grid, List } from "lucide-react";
 
@@ -13,8 +10,6 @@ const Home = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const { products } = useData();
-  const { isAdmin } = useUserRole();
 
   useEffect(() => {
     // Reset scroll position when component mounts
@@ -22,14 +17,14 @@ const Home = () => {
   }, []);
 
   const filters = [
-    { id: "all", label: "All Products", count: products.length },
+    { id: "all", label: "All Products", count: mockProducts.length },
     { id: "sales", label: "SFA", count: 2 },
     { id: "commerce", label: "DMS", count: 1 },
     { id: "design", label: "Design", count: 1 },
     { id: "finance", label: "Finance", count: 1 },
   ];
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = mockProducts.filter(product => {
     // Search both product name and video names
     const productNameMatch = product.title.toLowerCase().includes(searchQuery.toLowerCase());
     const videoNameMatch = product.videos?.some(video => 
@@ -107,30 +102,16 @@ const Home = () => {
               className="animate-fade-in"
               style={{ animationDelay: `${(index % 8) * 100 + 400}ms` }}
             >
-              {isAdmin ? (
-                <EditableVideoCard
-                  id={product.id}
-                  title={product.title}
-                  thumbnail={product.thumbnail}
-                  duration={product.totalDuration}
-                  lessonCount={product.lessonCount}
-                  category={product.category}
-                  isNew={product.isNew}
-                  viewMode={viewMode}
-                  isAdmin={isAdmin}
-                />
-              ) : (
-                <VideoCard
-                  id={product.id}
-                  title={product.title}
-                  thumbnail={product.thumbnail}
-                  duration={product.totalDuration}
-                  lessonCount={product.lessonCount}
-                  category={product.category}
-                  isNew={product.isNew}
-                  viewMode={viewMode}
-                />
-              )}
+              <VideoCard
+                id={product.id}
+                title={product.title}
+                thumbnail={product.thumbnail}
+                duration={product.totalDuration}
+                lessonCount={product.lessonCount}
+                category={product.category}
+                isNew={product.isNew}
+                viewMode={viewMode}
+              />
             </div>
           ))}
         </div>

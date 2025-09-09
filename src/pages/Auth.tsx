@@ -28,7 +28,7 @@ const Auth = () => {
       if (isAdmin) {
         navigate('/admin');
       } else {
-        navigate('/viewer');
+        navigate('/');
       }
     }
   }, [user, isAdmin, navigate]);
@@ -149,7 +149,7 @@ const Auth = () => {
     if (isAdmin) {
       navigate('/admin');
     } else {
-      navigate('/viewer');
+      navigate('/');
     }
   };
 
