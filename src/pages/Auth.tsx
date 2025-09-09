@@ -160,10 +160,10 @@ const Auth = () => {
           <div className="space-y-8">
             <div className="text-center space-y-2">
               <h1 className="text-3xl font-bold text-gray-900">
-                Create your account
+                Welcome to Salescode
               </h1>
               <p className="text-gray-600">
-                Access Salescode learning & demo hub (invite-only)
+                Access learning & demo hub (invite-only)
               </p>
             </div>
 
@@ -180,18 +180,6 @@ const Auth = () => {
               </div>
 
               <EmailForm onSubmit={handleEmailSubmit} />
-            </div>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Already have an account?{' '}
-                <button 
-                  onClick={() => navigate('/login')}
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Log in
-                </button>
-              </p>
             </div>
           </div>
         );

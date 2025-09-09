@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface VideoCardWithMenuProps {
   id: string;
@@ -37,6 +38,7 @@ const VideoCardWithMenu = ({
   viewMode = 'grid'
 }: VideoCardWithMenuProps) => {
   const { toast } = useToast();
+  const { isAdmin } = useUserRole();
 
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -114,23 +116,25 @@ const VideoCardWithMenu = ({
                 </div>
 
                 {/* Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild onClick={handleMenuClick}>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={handleAddToPlaylist}>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add to Playlist
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleCopyLink}>
-                      <Link2 className="w-4 h-4 mr-2" />
-                      Copy Demo Link
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {isAdmin && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={handleMenuClick}>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={handleAddToPlaylist}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add to Playlist
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleCopyLink}>
+                        <Link2 className="w-4 h-4 mr-2" />
+                        Copy Demo Link
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </div>
           </div>
@@ -177,29 +181,31 @@ const VideoCardWithMenu = ({
           </div>
 
           {/* Menu Button */}
-          <div className="absolute bottom-3 right-3">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild onClick={handleMenuClick}>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-8 w-8 p-0 bg-white/90 backdrop-blur-sm hover:bg-white/95 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <MoreVertical className="w-4 h-4 text-foreground" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={handleAddToPlaylist}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add to Playlist
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleCopyLink}>
-                  <Link2 className="w-4 h-4 mr-2" />
-                  Copy Demo Link
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          {isAdmin && (
+            <div className="absolute bottom-3 right-3">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild onClick={handleMenuClick}>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-8 w-8 p-0 bg-white/90 backdrop-blur-sm hover:bg-white/95 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <MoreVertical className="w-4 h-4 text-foreground" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleAddToPlaylist}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add to Playlist
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleCopyLink}>
+                    <Link2 className="w-4 h-4 mr-2" />
+                    Copy Demo Link
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </div>
 
         {/* Content */}

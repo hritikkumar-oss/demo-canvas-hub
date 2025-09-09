@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import InviteModal from "@/components/InviteModal";
 
 interface HeaderProps {
@@ -16,7 +17,8 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
 
   const isActivePath = (path: string) => location.pathname === path;
 
@@ -51,14 +53,16 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
             >
               New Launches
             </Link>
-            <Link 
-              to="/playlists" 
-              className={`transition-colors font-medium ${
-                isActivePath('/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
-              }`}
-            >
-              Playlists
-            </Link>
+            {isAdmin && (
+              <Link 
+                to="/playlists" 
+                className={`transition-colors font-medium ${
+                  isActivePath('/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
+                }`}
+              >
+                Playlists
+              </Link>
+            )}
             {isAdmin && (
               <Link 
                 to="/admin" 
@@ -85,17 +89,19 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
           </div>
 
           {/* Share Button */}
-          <div className="hidden md:block">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="rounded-full"
-              onClick={() => setInviteModalOpen(true)}
-            >
-              <Share2 className="w-4 h-4 mr-2" />
-              Invite
-            </Button>
-          </div>
+          {isAdmin && (
+            <div className="hidden md:block">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full"
+                onClick={() => setInviteModalOpen(true)}
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Invite
+              </Button>
+            </div>
+          )}
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
@@ -118,7 +124,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/auth')}
               >
                 <User className="h-4 w-4 mr-2" />
                 Login
@@ -145,9 +151,11 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               <Link to="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 New Launches
               </Link>
-              <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                Playlists
-              </Link>
+              {isAdmin && (
+                <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                  Playlists
+                </Link>
+              )}
               {isAdmin && (
                 <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Admin
@@ -161,15 +169,17 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
                   onChange={(e) => onSearchChange?.(e.target.value)}
                 />
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setInviteModalOpen(true)}
-                className="self-start"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Invite
-              </Button>
+              {isAdmin && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setInviteModalOpen(true)}
+                  className="self-start"
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Invite
+                </Button>
+              )}
             </nav>
           </div>
         )}

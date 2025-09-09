@@ -8,11 +8,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { mockProducts } from "@/data/mockData";
 import InviteModal from "@/components/InviteModal";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const VideoPlayer = () => {
   const { productId, videoId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAdmin } = useUserRole();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   
@@ -142,10 +144,12 @@ const VideoPlayer = () => {
                   Back to {product.title}
                 </Button>
               </div>
-              <Button variant="outline" size="sm" onClick={handleShare}>
-                <Share2 className="w-4 h-4 mr-2" />
-                Share Video
-              </Button>
+              {isAdmin && (
+                <Button variant="outline" size="sm" onClick={handleShare}>
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share Video
+                </Button>
+              )}
             </div>
           </div>
 
