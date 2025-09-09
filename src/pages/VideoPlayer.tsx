@@ -6,11 +6,15 @@ import Header from "@/components/Layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { mockProducts } from "@/data/mockData";
+import InviteModal from "@/components/InviteModal";
+import { useToast } from "@/hooks/use-toast";
 
 const VideoPlayer = () => {
   const { productId, videoId } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   
   const product = mockProducts.find(p => p.id === productId);
   const video = product?.videos.find(v => v.id === videoId);
@@ -41,6 +45,19 @@ const VideoPlayer = () => {
 
   const handleLessonClick = (lessonId: string) => {
     navigate(`/video/${productId}/${lessonId}`);
+  };
+
+  const handleShare = () => {
+    const videoUrl = `${window.location.origin}/video/${productId}/${videoId}`;
+    navigator.clipboard.writeText(videoUrl).then(() => {
+      toast({
+        title: "Link copied!",
+        description: "Video link has been copied to your clipboard.",
+      });
+    }).catch(() => {
+      // Fallback for older browsers
+      setInviteModalOpen(true);
+    });
   };
 
   return (
@@ -119,13 +136,13 @@ const VideoPlayer = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => window.history.back()}
+                  onClick={() => navigate(`/product/${productId}`)}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to {product.title}
                 </Button>
               </div>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleShare}>
                 <Share2 className="w-4 h-4 mr-2" />
                 Share Video
               </Button>
@@ -189,6 +206,15 @@ const VideoPlayer = () => {
           </div>
         </div>
       </div>
+
+      {/* Invite Modal for sharing */}
+      <InviteModal
+        isOpen={inviteModalOpen}
+        onClose={() => setInviteModalOpen(false)}
+        type="video"
+        title={video.title}
+        itemId={videoId}
+      />
     </div>
   );
 };
