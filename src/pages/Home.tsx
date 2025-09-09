@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Layout/Header";
-import VideoCard from "@/components/VideoCard/VideoCard";
+import EditableVideoCard from "@/components/EditableVideoCard";
 import FilterTabs from "@/components/FilterTabs/FilterTabs";
-import { mockProducts, categories } from "@/data/mockData";
+import { useData } from "@/contexts/DataContext";
 import { Button } from "@/components/ui/button";
 import { Grid, List } from "lucide-react";
 
 const Home = () => {
+  const { products } = useData();
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -17,14 +18,14 @@ const Home = () => {
   }, []);
 
   const filters = [
-    { id: "all", label: "All Products", count: mockProducts.length },
+    { id: "all", label: "All Products", count: products.length },
     { id: "sales", label: "SFA", count: 2 },
     { id: "commerce", label: "DMS", count: 1 },
     { id: "design", label: "Design", count: 1 },
     { id: "finance", label: "Finance", count: 1 },
   ];
 
-  const filteredProducts = mockProducts.filter(product => {
+  const filteredProducts = products.filter(product => {
     // Search both product name and video names
     const productNameMatch = product.title.toLowerCase().includes(searchQuery.toLowerCase());
     const videoNameMatch = product.videos?.some(video => 
@@ -102,7 +103,7 @@ const Home = () => {
               className="animate-fade-in"
               style={{ animationDelay: `${(index % 8) * 100 + 400}ms` }}
             >
-              <VideoCard
+              <EditableVideoCard
                 id={product.id}
                 title={product.title}
                 thumbnail={product.thumbnail}
