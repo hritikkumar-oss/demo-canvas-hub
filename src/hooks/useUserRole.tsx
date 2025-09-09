@@ -2,30 +2,18 @@ import { useState, useEffect } from 'react';
 
 export type UserRole = 'admin' | 'viewer';
 
-// Mock role check with dev toggle functionality
-export const useUserRole = (): { 
-  role: UserRole; 
-  isAdmin: boolean; 
-  toggleRole: () => void;
-} => {
-  const [role, setRole] = useState<UserRole>(() => {
-    // Check localStorage for persisted role, default to admin
-    const savedRole = localStorage.getItem('userRole') as UserRole;
-    return savedRole || 'admin';
-  });
+// Mock role check - replace with actual auth logic
+export const useUserRole = (): { role: UserRole; isAdmin: boolean } => {
+  const [role, setRole] = useState<UserRole>('admin'); // Default to admin for demo
 
   useEffect(() => {
-    // Persist role to localStorage
-    localStorage.setItem('userRole', role);
-  }, [role]);
-
-  const toggleRole = () => {
-    setRole(prevRole => prevRole === 'admin' ? 'viewer' : 'admin');
-  };
+    // Mock logic - in real app, this would check auth state
+    // For demo purposes, defaulting to admin to show all features
+    setRole('admin');
+  }, []);
 
   return {
     role,
-    isAdmin: role === 'admin',
-    toggleRole
+    isAdmin: role === 'admin'
   };
 };

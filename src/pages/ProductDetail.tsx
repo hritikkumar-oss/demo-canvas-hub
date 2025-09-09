@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Layout/Header";
-import EditableVideoCardWithMenu from "@/components/EditableVideoCardWithMenu";
+import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
 import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
 import InviteModal from "@/components/InviteModal";
 import { Button } from "@/components/ui/button";
-import { useData } from "@/contexts/DataContext";
+import { mockProducts } from "@/data/mockData";
 import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
 
 const ProductDetail = () => {
   const { productId } = useParams();
-  const { products } = useData();
   const navigate = useNavigate();
-  const product = products.find(p => p.id === productId);
+  const product = mockProducts.find(p => p.id === productId);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -146,7 +145,7 @@ const ProductDetail = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 100 + 200}ms` }}
                 >
-                  <EditableVideoCardWithMenu
+                  <VideoCardWithMenu
                     id={video.id}
                     title={video.title}
                     thumbnail={video.thumbnail}

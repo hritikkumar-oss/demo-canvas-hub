@@ -2,52 +2,46 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { DataProvider } from "@/contexts/DataContext";
-import AdminView from "./pages/AdminView";
-import ViewerView from "./pages/ViewerView";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import Home from "./pages/Home";
+import ProductDetail from "./pages/ProductDetail";
+import TutorialViewer from "./pages/TutorialViewer";
+import VideoPlayer from "./pages/VideoPlayer";
+import AdminDashboard from "./pages/AdminDashboard";
+import NewLaunches from "./pages/NewLaunches";
+import Playlists from "./pages/Playlists";
+import PlaylistDetail from "./pages/PlaylistDetail";
+import NotFound from "./pages/NotFound";
 import AuthGate from "./pages/AuthGate";
 import Auth from "./pages/Auth";
-import RoleToggle from "@/components/RoleToggle";
-import { useUserRole } from "@/hooks/useUserRole";
 
 const queryClient = new QueryClient();
-
-const AppContent = () => {
-  const { isAdmin } = useUserRole();
-
-  const handleAuthSuccess = () => {
-    // Redirect based on role after successful auth
-    return isAdmin ? "/admin" : "/viewer";
-  };
-
-  return (
-    <>
-      <Routes>
-        <Route path="/auth" element={<Auth onSuccess={handleAuthSuccess} />} />
-        <Route path="/invite/:token" element={<AuthGate />} />
-        <Route path="/" element={<Navigate to={isAdmin ? "/admin" : "/viewer"} replace />} />
-        <Route path="/admin/*" element={<AdminView />} />
-        <Route path="/viewer/*" element={<ViewerView />} />
-      </Routes>
-      <RoleToggle />
-      <Toaster />
-      <Sonner />
-    </>
-  );
-};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <DataProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
-        </AuthProvider>
-      </DataProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/invite/:token" element={<AuthGate />} />
+              <Route path="/" element={<Home />} />
+            <Route path="/product/:productId" element={<ProductDetail />} />
+            <Route path="/product/:productId/tutorial/:videoId" element={<TutorialViewer />} />
+            <Route path="/video/:productId/:videoId" element={<VideoPlayer />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/new-launches" element={<NewLaunches />} />
+            <Route path="/playlists" element={<Playlists />} />
+            <Route path="/playlists/:playlistId" element={<PlaylistDetail />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Toaster />
+          <Sonner />
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

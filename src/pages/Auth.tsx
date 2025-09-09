@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useUserRole } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { GoogleButton } from '@/components/auth/GoogleButton';
@@ -12,12 +11,7 @@ import { SuccessState } from '@/components/auth/SuccessState';
 
 type AuthStep = 'email' | 'otp' | 'success';
 
-interface AuthProps {
-  onSuccess?: () => string;
-}
-
-const Auth = ({ onSuccess }: AuthProps = {}) => {
-  const { isAdmin: mockIsAdmin } = useUserRole();
+const Auth = () => {
   const [step, setStep] = useState<AuthStep>('email');
   const [email, setEmail] = useState('');
   const { user, isAdmin } = useAuth();
@@ -152,8 +146,11 @@ const Auth = ({ onSuccess }: AuthProps = {}) => {
   };
 
   const handleSuccessRedirect = () => {
-    const redirectPath = onSuccess ? onSuccess() : (mockIsAdmin ? "/admin" : "/viewer");
-    navigate(redirectPath);
+    if (isAdmin) {
+      navigate('/admin');
+    } else {
+      navigate('/');
+    }
   };
 
   const renderContent = () => {
