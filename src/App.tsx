@@ -20,6 +20,13 @@ import Auth from "./pages/Auth";
 import AdminView from "./pages/AdminView";
 import ViewerView from "./pages/ViewerView";
 import DevModeToggle from "@/components/DevModeToggle";
+import StudioLayout from "./components/studio/StudioLayout";
+import StudioHome from "./pages/studio/StudioHome";
+import StudioProducts from "./pages/studio/StudioProducts";
+import StudioVideos from "./pages/studio/StudioVideos";
+import StudioUploads from "./pages/studio/StudioUploads";
+import StudioPlaylists from "./pages/studio/StudioPlaylists";
+import StudioNewLaunches from "./pages/studio/StudioNewLaunches";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +50,16 @@ const App = () => (
               {/* Admin and Viewer Routes */}
               <Route path="/admin/*" element={<AdminView />} />
               <Route path="/viewer/*" element={<ViewerView />} />
+              
+              {/* Studio Routes */}
+              <Route path="/studio" element={<StudioLayout />}>
+                <Route index element={<StudioHome />} />
+                <Route path="products" element={<StudioProducts />} />
+                <Route path="videos" element={<StudioVideos />} />
+                <Route path="uploads" element={<StudioUploads />} />
+                <Route path="playlists" element={<StudioPlaylists />} />
+                <Route path="new-launches" element={<StudioNewLaunches />} />
+              </Route>
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
