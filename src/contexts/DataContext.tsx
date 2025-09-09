@@ -7,6 +7,10 @@ interface DataContextType {
   updateProduct: (id: string, updates: Partial<Product>) => void;
   updateVideo: (productId: string, videoId: string, updates: Partial<Video>) => void;
   updatePlaylist: (id: string, updates: Partial<Playlist>) => void;
+  addProduct: (product: Omit<Product, 'id'>) => void;
+  addVideo: (productId: string, video: Omit<Video, 'id'>) => void;
+  deleteProduct: (id: string) => void;
+  deleteVideo: (productId: string, videoId: string) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -60,12 +64,48 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     ));
   };
 
+  const addProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: `product-${Date.now()}`,
+    };
+    setProducts(prev => [...prev, newProduct]);
+  };
+
+  const addVideo = (productId: string, video: Omit<Video, 'id'>) => {
+    const newVideo: Video = {
+      ...video,
+      id: `video-${Date.now()}`,
+    };
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? { ...product, videos: [...product.videos, newVideo] }
+        : product
+    ));
+  };
+
+  const deleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(product => product.id !== id));
+  };
+
+  const deleteVideo = (productId: string, videoId: string) => {
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? { ...product, videos: product.videos.filter(video => video.id !== videoId) }
+        : product
+    ));
+  };
+
   const value = {
     products,
     playlists,
     updateProduct,
     updateVideo,
     updatePlaylist,
+    addProduct,
+    addVideo,
+    deleteProduct,
+    deleteVideo,
   };
 
   return (

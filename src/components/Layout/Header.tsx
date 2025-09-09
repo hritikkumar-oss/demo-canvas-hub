@@ -20,7 +20,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  const { isViewerMode } = useAdminMode();
+  const { isAdminMode, isViewerMode } = useAdminMode();
 
   const isActivePath = (path: string) => location.pathname === path;
 
@@ -40,39 +40,29 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
-              to="/" 
+              to={isAdminMode ? "/admin/home" : isViewerMode ? "/viewer/home" : "/"} 
               className={`transition-colors font-medium ${
-                isActivePath('/') ? 'text-primary' : 'text-foreground hover:text-primary'
+                isActivePath('/') || isActivePath('/admin/home') || isActivePath('/viewer/home') ? 'text-primary' : 'text-foreground hover:text-primary'
               }`}
             >
               Home
             </Link>
             <Link 
-              to="/new-launches" 
+              to={isAdminMode ? "/admin/new-launches" : isViewerMode ? "/viewer/new-launches" : "/new-launches"} 
               className={`transition-colors font-medium ${
-                isActivePath('/new-launches') ? 'text-primary' : 'text-foreground hover:text-primary'
+                isActivePath('/new-launches') || isActivePath('/admin/new-launches') || isActivePath('/viewer/new-launches') ? 'text-primary' : 'text-foreground hover:text-primary'
               }`}
             >
               New Launches
             </Link>
             {isAdmin && !isViewerMode && (
               <Link 
-                to="/playlists" 
+                to="/admin/playlists" 
                 className={`transition-colors font-medium ${
-                  isActivePath('/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
+                  isActivePath('/admin/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Playlists
-              </Link>
-            )}
-            {isAdmin && !isViewerMode && (
-              <Link 
-                to="/admin" 
-                className={`transition-colors font-medium ${
-                  isActivePath('/admin') ? 'text-primary' : 'text-foreground hover:text-primary'
-                }`}
-              >
-                Admin
               </Link>
             )}
           </nav>
@@ -147,20 +137,15 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
-              <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <Link to={isAdminMode ? "/admin/home" : isViewerMode ? "/viewer/home" : "/"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Home
               </Link>
-              <Link to="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <Link to={isAdminMode ? "/admin/new-launches" : isViewerMode ? "/viewer/new-launches" : "/new-launches"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 New Launches
               </Link>
               {isAdmin && !isViewerMode && (
-                <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                <Link to="/admin/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Playlists
-                </Link>
-              )}
-              {isAdmin && !isViewerMode && (
-                <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                  Admin
                 </Link>
               )}
               <div className="pt-2">

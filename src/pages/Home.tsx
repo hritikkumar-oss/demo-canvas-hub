@@ -5,9 +5,10 @@ import EditableVideoCard from "@/components/EditableVideoCard";
 import FilterTabs from "@/components/FilterTabs/FilterTabs";
 import { categories } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
-import { Grid, List } from "lucide-react";
+import { Grid, List, Plus } from "lucide-react";
 import { useData } from "@/contexts/DataContext";
 import { useAdminMode } from "@/hooks/useAdminMode";
+import AddProductModal from "@/components/AddProductModal";
 
 const Home = () => {
   const { products } = useData();
@@ -15,6 +16,7 @@ const Home = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
 
   useEffect(() => {
     // Reset scroll position when component mounts
@@ -71,26 +73,37 @@ const Home = () => {
               filters={filters}
             />
             
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">View:</span>
-              <div className="flex border rounded-lg p-1">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  className="h-8 px-3"
-                  onClick={() => setViewMode("grid")}
+            {/* Add Product Button and View Mode Toggle */}
+            <div className="flex items-center gap-4">
+              {isAdminMode && (
+                <Button 
+                  onClick={() => setIsAddProductModalOpen(true)}
+                  className="rounded-full"
                 >
-                  <Grid className="h-4 w-4" />
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Product
                 </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  className="h-8 px-3"
-                  onClick={() => setViewMode("list")}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
+              )}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">View:</span>
+                <div className="flex border rounded-lg p-1">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "ghost"}
+                    size="sm"
+                    className="h-8 px-3"
+                    onClick={() => setViewMode("grid")}
+                  >
+                    <Grid className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size="sm"
+                    className="h-8 px-3"
+                    onClick={() => setViewMode("list")}
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -160,6 +173,11 @@ const Home = () => {
           </button>
         </div>
       </section>
+
+      <AddProductModal
+        isOpen={isAddProductModalOpen}
+        onClose={() => setIsAddProductModalOpen(false)}
+      />
     </div>
   );
 };

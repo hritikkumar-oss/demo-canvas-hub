@@ -43,7 +43,6 @@ const App = () => (
               {/* Admin and Viewer Routes */}
               <Route path="/admin/*" element={<AdminView />} />
               <Route path="/viewer/*" element={<ViewerView />} />
-              <Route path="/admin" element={<AdminDashboard />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
