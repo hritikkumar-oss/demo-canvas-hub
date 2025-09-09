@@ -2,16 +2,20 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Layout/Header";
 import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
+import EditableVideoCardWithMenu from "@/components/EditableVideoCardWithMenu";
 import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
 import InviteModal from "@/components/InviteModal";
 import { Button } from "@/components/ui/button";
-import { mockProducts } from "@/data/mockData";
+import { useData } from "@/contexts/DataContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const product = mockProducts.find(p => p.id === productId);
+  const { products } = useData();
+  const { isAdmin } = useUserRole();
+  const product = products.find(p => p.id === productId);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -145,22 +149,43 @@ const ProductDetail = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 100 + 200}ms` }}
                 >
-                  <VideoCardWithMenu
-                    id={video.id}
-                    title={video.title}
-                    thumbnail={video.thumbnail}
-                    duration={video.duration}
-                    lessonCount={1}
-                    category="Tutorial"
-                    viewMode={viewMode}
-                    onClick={() => {
-                      navigate(`/video/${productId}/${video.id}`);
-                    }}
-                    onAddToPlaylist={() => {
-                      setSelectedVideoForPlaylist({ id: video.id, title: video.title });
-                      setPlaylistModalOpen(true);
-                    }}
-                  />
+                  {isAdmin ? (
+                    <EditableVideoCardWithMenu
+                      id={video.id}
+                      title={video.title}
+                      thumbnail={video.thumbnail}
+                      duration={video.duration}
+                      lessonCount={1}
+                      category="Tutorial"
+                      viewMode={viewMode}
+                      onClick={() => {
+                        navigate(`/video/${productId}/${video.id}`);
+                      }}
+                      onAddToPlaylist={() => {
+                        setSelectedVideoForPlaylist({ id: video.id, title: video.title });
+                        setPlaylistModalOpen(true);
+                      }}
+                      isAdmin={isAdmin}
+                      productId={productId}
+                    />
+                  ) : (
+                    <VideoCardWithMenu
+                      id={video.id}
+                      title={video.title}
+                      thumbnail={video.thumbnail}
+                      duration={video.duration}
+                      lessonCount={1}
+                      category="Tutorial"
+                      viewMode={viewMode}
+                      onClick={() => {
+                        navigate(`/video/${productId}/${video.id}`);
+                      }}
+                      onAddToPlaylist={() => {
+                        setSelectedVideoForPlaylist({ id: video.id, title: video.title });
+                        setPlaylistModalOpen(true);
+                      }}
+                    />
+                  )}
                 </div>
               ))}
             </div>

@@ -27,7 +27,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
+          <Link to={isAdmin ? "/admin" : "/viewer"} className="flex items-center hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/e034b324-e49a-4ea8-9cb1-9222a945fe38.png" 
               alt="salescode.ai Demo" 
@@ -38,26 +38,26 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
-              to="/" 
+              to={isAdmin ? "/admin" : "/viewer"} 
               className={`transition-colors font-medium ${
-                isActivePath('/') ? 'text-primary' : 'text-foreground hover:text-primary'
+                (isAdmin ? isActivePath('/admin') : isActivePath('/viewer')) ? 'text-primary' : 'text-foreground hover:text-primary'
               }`}
             >
               Home
             </Link>
             <Link 
-              to="/new-launches" 
+              to={isAdmin ? "/admin/new-launches" : "/viewer/new-launches"} 
               className={`transition-colors font-medium ${
-                isActivePath('/new-launches') ? 'text-primary' : 'text-foreground hover:text-primary'
+                (isAdmin ? isActivePath('/admin/new-launches') : isActivePath('/viewer/new-launches')) ? 'text-primary' : 'text-foreground hover:text-primary'
               }`}
             >
               New Launches
             </Link>
             {isAdmin && (
               <Link 
-                to="/playlists" 
+                to="/admin/playlists" 
                 className={`transition-colors font-medium ${
-                  isActivePath('/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
+                  isActivePath('/admin/playlists') ? 'text-primary' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Playlists
@@ -65,9 +65,9 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
             )}
             {isAdmin && (
               <Link 
-                to="/admin" 
+                to="/admin/dashboard" 
                 className={`transition-colors font-medium ${
-                  isActivePath('/admin') ? 'text-primary' : 'text-foreground hover:text-primary'
+                  isActivePath('/admin/dashboard') ? 'text-primary' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Admin
@@ -145,19 +145,19 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
-              <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <Link to={isAdmin ? "/admin" : "/viewer"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Home
               </Link>
-              <Link to="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <Link to={isAdmin ? "/admin/new-launches" : "/viewer/new-launches"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 New Launches
               </Link>
               {isAdmin && (
-                <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                <Link to="/admin/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Playlists
                 </Link>
               )}
               {isAdmin && (
-                <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                <Link to="/admin/dashboard" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Admin
                 </Link>
               )}
