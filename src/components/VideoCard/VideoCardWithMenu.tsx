@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAdminMode } from "@/hooks/useAdminMode";
 
 interface VideoCardWithMenuProps {
   id: string;
@@ -39,6 +40,7 @@ const VideoCardWithMenu = ({
 }: VideoCardWithMenuProps) => {
   const { toast } = useToast();
   const { isAdmin } = useUserRole();
+  const { isViewerMode } = useAdminMode();
 
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -116,7 +118,7 @@ const VideoCardWithMenu = ({
                 </div>
 
                 {/* Menu */}
-                {isAdmin && (
+                {isAdmin && !isViewerMode && onAddToPlaylist && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={handleMenuClick}>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -181,7 +183,7 @@ const VideoCardWithMenu = ({
           </div>
 
           {/* Menu Button */}
-          {isAdmin && (
+          {isAdmin && !isViewerMode && onAddToPlaylist && (
             <div className="absolute bottom-3 right-3">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild onClick={handleMenuClick}>

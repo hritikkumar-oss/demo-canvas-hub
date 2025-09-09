@@ -2,16 +2,22 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Layout/Header";
 import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
+import EditableVideoCardWithMenu from "@/components/EditableVideoCardWithMenu";
 import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
 import InviteModal from "@/components/InviteModal";
 import { Button } from "@/components/ui/button";
-import { mockProducts } from "@/data/mockData";
 import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
+import { useData } from "@/contexts/DataContext";
+import { useAdminMode } from "@/hooks/useAdminMode";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const product = mockProducts.find(p => p.id === productId);
+  const { products } = useData();
+  const { isAdminMode, isViewerMode } = useAdminMode();
+  const { isAdmin } = useUserRole();
+  const product = products.find(p => p.id === productId);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -56,14 +62,16 @@ const ProductDetail = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setInviteModalOpen(true)}
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Invite to Product
-              </Button>
+              {isAdmin && !isViewerMode && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setInviteModalOpen(true)}
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Invite to Product
+                </Button>
+              )}
             </div>
             
             <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -145,22 +153,42 @@ const ProductDetail = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 100 + 200}ms` }}
                 >
-                  <VideoCardWithMenu
-                    id={video.id}
-                    title={video.title}
-                    thumbnail={video.thumbnail}
-                    duration={video.duration}
-                    lessonCount={1}
-                    category="Tutorial"
-                    viewMode={viewMode}
-                    onClick={() => {
-                      navigate(`/video/${productId}/${video.id}`);
-                    }}
-                    onAddToPlaylist={() => {
-                      setSelectedVideoForPlaylist({ id: video.id, title: video.title });
-                      setPlaylistModalOpen(true);
-                    }}
-                  />
+                  {isAdminMode ? (
+                    <EditableVideoCardWithMenu
+                      id={video.id}
+                      title={video.title}
+                      thumbnail={video.thumbnail}
+                      duration={video.duration}
+                      lessonCount={1}
+                      category="Tutorial"
+                      description={video.description}
+                      viewMode={viewMode}
+                      onClick={() => {
+                        navigate(`/video/${productId}/${video.id}`);
+                      }}
+                      onAddToPlaylist={() => {
+                        setSelectedVideoForPlaylist({ id: video.id, title: video.title });
+                        setPlaylistModalOpen(true);
+                      }}
+                    />
+                  ) : (
+                    <VideoCardWithMenu
+                      id={video.id}
+                      title={video.title}
+                      thumbnail={video.thumbnail}
+                      duration={video.duration}
+                      lessonCount={1}
+                      category="Tutorial"
+                      viewMode={viewMode}
+                      onClick={() => {
+                        navigate(`/video/${productId}/${video.id}`);
+                      }}
+                      onAddToPlaylist={isAdmin && !isViewerMode ? () => {
+                        setSelectedVideoForPlaylist({ id: video.id, title: video.title });
+                        setPlaylistModalOpen(true);
+                      } : undefined}
+                    />
+                  )}
                 </div>
               ))}
             </div>

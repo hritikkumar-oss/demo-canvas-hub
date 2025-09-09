@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAdminMode } from "@/hooks/useAdminMode";
 import InviteModal from "@/components/InviteModal";
 
 interface HeaderProps {
@@ -19,6 +20,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
+  const { isViewerMode } = useAdminMode();
 
   const isActivePath = (path: string) => location.pathname === path;
 
@@ -53,7 +55,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
             >
               New Launches
             </Link>
-            {isAdmin && (
+            {isAdmin && !isViewerMode && (
               <Link 
                 to="/playlists" 
                 className={`transition-colors font-medium ${
@@ -63,7 +65,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
                 Playlists
               </Link>
             )}
-            {isAdmin && (
+            {isAdmin && !isViewerMode && (
               <Link 
                 to="/admin" 
                 className={`transition-colors font-medium ${
@@ -89,7 +91,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
           </div>
 
           {/* Share Button */}
-          {isAdmin && (
+          {isAdmin && !isViewerMode && (
             <div className="hidden md:block">
               <Button 
                 variant="outline" 
@@ -151,12 +153,12 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               <Link to="/new-launches" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 New Launches
               </Link>
-              {isAdmin && (
+              {isAdmin && !isViewerMode && (
                 <Link to="/playlists" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Playlists
                 </Link>
               )}
-              {isAdmin && (
+              {isAdmin && !isViewerMode && (
                 <Link to="/admin" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Admin
                 </Link>
@@ -169,7 +171,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
                   onChange={(e) => onSearchChange?.(e.target.value)}
                 />
               </div>
-              {isAdmin && (
+              {isAdmin && !isViewerMode && (
                 <Button 
                   variant="outline" 
                   size="sm" 
