@@ -62,17 +62,71 @@ const generateMockVideos = (productId: string, thumbnail: string, count: number 
   }));
 };
 
+// Generate specific videos for NextGen SFA
+const nextGenSFALessons = [
+  "Why Traditional SFA is Broken",
+  "Salescode SKILL & WILL Model", 
+  "Salescode Perfect Basket Model",
+  "Hyper-personalised Landing Page (Home Screen)",
+  "Intelligent PJP",
+  "AI Generated Target",
+  "AI Generated Order Tasks",
+  "AI Generated Execution Tasks",
+  "Task Based Incentive",
+  "Hyper-personalized One-Click Order Basket",
+  "Most Advanced Product Catalogue and Search",
+  "Intelligent Nudges (incl backend nudge creation)",
+  "Order Summary and Task Gamification",
+  "AI Generated Van Loadout",
+  "KPI Tracking Dashboards",
+  "Incentive Dashboard",
+  "Day End Summary Report",
+  "Multi Media Communication Banners",
+  "Personalized PICOS",
+  "New Store Opportunities",
+  "Store Profile",
+  "IR based Merchandizing",
+  "Product Returns",
+  "Store Inventory Capture",
+  "Asset Tracking",
+  "Collections",
+  "Competition Tracking",
+  "Order Tracking",
+  "Feedback & Support",
+  "Attendance",
+  "Outlet Mapping",
+  "Remote Order",
+  "Salescode SOCIAL for Sales Teams",
+  "Multi Lingual",
+  "ML Model Performance Insights",
+  "3 Critical Capabilities - for creating Next Gen Systems"
+];
+
+const generateNextGenSFAVideos = (): Video[] => {
+  return nextGenSFALessons.map((title, index) => ({
+    id: `getting-started-video-${index + 1}`,
+    title,
+    description: `Learn about ${title.toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
+    duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
+    thumbnail: gettingStartedThumb,
+    videoUrl: `https://www.youtube.com/embed/dQw4w9WgXcQ?si=nextgen${index}&autoplay=0&rel=0`,
+    productId: "getting-started",
+    createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+    isNew: Math.random() > 0.8
+  }));
+};
+
 export const mockProducts: Product[] = [
   {
     id: "getting-started",
-    title: "Getting Started",
-    description: "Learn the basics of our platform with comprehensive tutorials",
-    category: "Basics",
+    title: "NextGen SFA",
+    description: "Comprehensive guide to Next Generation Sales Force Automation",
+    category: "Sales",
     thumbnail: gettingStartedThumb,
-    totalDuration: "5 hours 57 minutes",
-    lessonCount: 10,
+    totalDuration: "18 hours 30 minutes",
+    lessonCount: 36,
     isNew: true,
-    videos: generateMockVideos("getting-started", gettingStartedThumb)
+    videos: generateNextGenSFAVideos()
   },
   {
     id: "crm",
