@@ -99,11 +99,11 @@ const ProductDetail = () => {
                 />
                 <div 
                   className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer"
-                  onClick={() => {
-                    if (firstVideo) {
-                      navigate(`/video/${productId}/${firstVideo.id}`);
-                    }
-                  }}
+                   onClick={() => {
+                     if (firstVideo) {
+                       navigate(`/video/${productId}/${firstVideo.id}`);
+                     }
+                   }}
                 >
                   <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
                     <Play className="w-8 h-8 text-primary ml-1" fill="currentColor" />
@@ -163,9 +163,9 @@ const ProductDetail = () => {
                       category="Tutorial"
                       description={video.description}
                       viewMode={viewMode}
-                      onClick={() => {
-                        navigate(`/video/${productId}/${video.id}`);
-                      }}
+                       onClick={() => {
+                         navigate(`/video/${productId}/${video.id}`);
+                       }}
                       onAddToPlaylist={() => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
                         setPlaylistModalOpen(true);
@@ -180,9 +180,9 @@ const ProductDetail = () => {
                       lessonCount={1}
                       category="Tutorial"
                       viewMode={viewMode}
-                      onClick={() => {
-                        navigate(`/video/${productId}/${video.id}`);
-                      }}
+                       onClick={() => {
+                         navigate(`/video/${productId}/${video.id}`);
+                       }}
                       onAddToPlaylist={isAdmin && !isViewerMode ? () => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
                         setPlaylistModalOpen(true);

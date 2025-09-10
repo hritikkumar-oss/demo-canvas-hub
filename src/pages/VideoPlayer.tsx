@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Menu, Play, Share2, ArrowLeft } from "lucide
 import Header from "@/components/Layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { mockProducts } from "@/data/mockData";
+import { useData } from "@/contexts/DataContext";
 import InviteModal from "@/components/InviteModal";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -15,11 +15,20 @@ const VideoPlayer = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isAdmin } = useUserRole();
+  const { products } = useData();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   
-  const product = mockProducts.find(p => p.id === productId);
-  const video = product?.videos.find(v => v.id === videoId);
+  const product = products.find(p => p.id === productId);
+  let video = product?.videos.find(v => v.id === videoId);
+  
+  // If video not found, fall back to first video in product
+  if (!video && product?.videos.length > 0) {
+    video = product.videos[0];
+    // Update URL to match the fallback video
+    navigate(`/video/${productId}/${video.id}`, { replace: true });
+  }
+  
   const currentVideoIndex = product?.videos.findIndex(v => v.id === videoId) ?? 0;
 
   useEffect(() => {
