@@ -104,13 +104,13 @@ const nextGenSFALessons = [
 
 const generateNextGenSFAVideos = (): Video[] => {
   return nextGenSFALessons.map((title, index) => ({
-    id: `getting-started-video-${index + 1}`,
+    id: `nextgen-sfa-video-${index + 1}`,
     title,
     description: `Learn about ${title.toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
     duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
     thumbnail: gettingStartedThumb,
     videoUrl: `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&rel=0&modestbranding=1`,
-    productId: "getting-started",
+    productId: "nextgen-sfa",
     createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     isNew: Math.random() > 0.8
   }));
@@ -118,7 +118,7 @@ const generateNextGenSFAVideos = (): Video[] => {
 
 export const mockProducts: Product[] = [
   {
-    id: "getting-started",
+    id: "nextgen-sfa",
     title: "NextGen SFA",
     description: "Comprehensive guide to Next Generation Sales Force Automation",
     category: "Sales",

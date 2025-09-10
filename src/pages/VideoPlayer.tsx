@@ -29,7 +29,7 @@ const VideoPlayer = () => {
     navigate(`/video/${productId}/${video.id}`, { replace: true });
   }
   
-  const currentVideoIndex = product?.videos.findIndex(v => v.id === videoId) ?? 0;
+  const currentVideoIndex = video ? product?.videos.findIndex(v => v.id === video.id) ?? 0 : 0;
 
   useEffect(() => {
     // Reset scroll position when component mounts
