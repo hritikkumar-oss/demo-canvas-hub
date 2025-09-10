@@ -23,7 +23,7 @@ const VideoPlayer = () => {
   let video = product?.videos.find(v => v.id === videoId);
   
   // If video not found, fall back to first video in product
-  if (!video && product?.videos.length > 0) {
+  if (!video && product?.videos && product.videos.length > 0) {
     video = product.videos[0];
     // Update URL to match the fallback video
     navigate(`/video/${productId}/${video.id}`, { replace: true });
