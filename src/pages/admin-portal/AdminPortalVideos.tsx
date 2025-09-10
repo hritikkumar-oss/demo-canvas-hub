@@ -26,12 +26,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye, Play } from 'lucide-react';
-import { AddVideoModal } from '@/components/studio/AddVideoModal';
+import { AddVideoModal } from '@/components/admin-portal/AddVideoModal';
 import EditCardModal from '@/components/EditCardModal';
 import { useToast } from '@/hooks/use-toast';
 import { Video } from '@/data/mockData';
 
-const StudioVideos: React.FC = () => {
+const AdminPortalVideos: React.FC = () => {
   const { products, deleteVideo } = useData();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
@@ -208,4 +208,4 @@ const StudioVideos: React.FC = () => {
   );
 };
 
-export default StudioVideos;
+export default AdminPortalVideos;

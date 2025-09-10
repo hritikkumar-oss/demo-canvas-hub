@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { VideoIcon, Package, List, TrendingUp, Plus, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const StudioHome: React.FC = () => {
+const AdminPortalHome: React.FC = () => {
   const { products, playlists } = useData();
 
   const totalVideos = products.reduce((total, product) => total + product.videos.length, 0);
@@ -24,12 +24,12 @@ const StudioHome: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Studio Dashboard</h1>
+          <h1 className="text-3xl font-bold text-foreground">Admin Portal Dashboard</h1>
           <p className="text-muted-foreground mt-1">Manage your video content and track performance</p>
         </div>
         <div className="flex gap-3">
           <Button asChild>
-            <Link to="/studio/uploads">
+            <Link to="/admin-portal/uploads">
               <Plus className="h-4 w-4 mr-2" />
               Upload Video
             </Link>
@@ -106,7 +106,7 @@ const StudioHome: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button asChild className="w-full">
-              <Link to="/studio/products">
+              <Link to="/admin-portal/products">
                 <Eye className="h-4 w-4 mr-2" />
                 View All Products
               </Link>
@@ -126,7 +126,7 @@ const StudioHome: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button asChild className="w-full">
-              <Link to="/studio/videos">
+              <Link to="/admin-portal/videos">
                 <Eye className="h-4 w-4 mr-2" />
                 View All Videos
               </Link>
@@ -146,7 +146,7 @@ const StudioHome: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button asChild className="w-full">
-              <Link to="/studio/playlists">
+              <Link to="/admin-portal/playlists">
                 <Eye className="h-4 w-4 mr-2" />
                 Manage Playlists
               </Link>
@@ -179,4 +179,4 @@ const StudioHome: React.FC = () => {
   );
 };
 
-export default StudioHome;
+export default AdminPortalHome;

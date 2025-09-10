@@ -23,20 +23,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const sidebarItems = [
-  { id: 'home', label: 'Studio Home', icon: Home, path: '/studio' },
-  { id: 'products', label: 'Products', icon: Package, path: '/studio/products' },
-  { id: 'videos', label: 'Videos', icon: VideoIcon, path: '/studio/videos' },
-  { id: 'uploads', label: 'Uploads', icon: Upload, path: '/studio/uploads' },
-  { id: 'playlists', label: 'Playlists', icon: List, path: '/studio/playlists' },
-  { id: 'new-launches', label: 'New Launches', icon: TrendingUp, path: '/studio/new-launches' },
+  { id: 'home', label: 'Admin Home', icon: Home, path: '/admin-portal' },
+  { id: 'products', label: 'Products', icon: Package, path: '/admin-portal/products' },
+  { id: 'videos', label: 'Videos', icon: VideoIcon, path: '/admin-portal/videos' },
+  { id: 'uploads', label: 'Uploads', icon: Upload, path: '/admin-portal/uploads' },
+  { id: 'playlists', label: 'Playlists', icon: List, path: '/admin-portal/playlists' },
+  { id: 'new-launches', label: 'New Launches', icon: TrendingUp, path: '/admin-portal/new-launches' },
 ];
 
-const StudioLayout: React.FC = () => {
+const AdminPortalLayout: React.FC = () => {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    if (path === '/studio') {
-      return location.pathname === '/studio';
+    if (path === '/admin-portal') {
+      return location.pathname === '/admin-portal';
     }
     return location.pathname.startsWith(path);
   };
@@ -45,13 +45,13 @@ const StudioLayout: React.FC = () => {
     <div className="min-h-screen bg-background flex w-full">
       {/* Sidebar */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-        {/* Studio Logo */}
+        {/* Admin Portal Logo */}
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-              <Play className="h-5 w-5 text-primary-foreground" />
+              <Settings className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-lg font-semibold text-sidebar-foreground">Studio</span>
+            <span className="text-lg font-semibold text-sidebar-foreground">Admin Portal</span>
           </div>
         </div>
 
@@ -130,4 +130,4 @@ const StudioLayout: React.FC = () => {
   );
 };
 
-export default StudioLayout;
+export default AdminPortalLayout;

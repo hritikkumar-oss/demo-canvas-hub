@@ -11,12 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye, List } from 'lucide-react';
-import { AddPlaylistModal } from '@/components/studio/AddPlaylistModal';
-import { PlaylistDetailModal } from '@/components/studio/PlaylistDetailModal';
+import { AddPlaylistModal } from '@/components/admin-portal/AddPlaylistModal';
+import { PlaylistDetailModal } from '@/components/admin-portal/PlaylistDetailModal';
 import { useToast } from '@/hooks/use-toast';
 import { Playlist } from '@/data/mockData';
 
-const StudioPlaylists: React.FC = () => {
+const AdminPortalPlaylists: React.FC = () => {
   const { playlists, deletePlaylist } = useData();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
@@ -159,4 +159,4 @@ const StudioPlaylists: React.FC = () => {
   );
 };
 
-export default StudioPlaylists;
+export default AdminPortalPlaylists;

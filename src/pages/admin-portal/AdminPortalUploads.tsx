@@ -17,7 +17,7 @@ interface UploadItem {
   preview?: string;
 }
 
-const StudioUploads: React.FC = () => {
+const AdminPortalUploads: React.FC = () => {
   const { toast } = useToast();
   const [uploads, setUploads] = useState<UploadItem[]>([
     {
@@ -232,4 +232,4 @@ const StudioUploads: React.FC = () => {
   );
 };
 
-export default StudioUploads;
+export default AdminPortalUploads;

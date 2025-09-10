@@ -18,11 +18,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Plus, MoreHorizontal, Trash2, Eye, TrendingUp, Package, VideoIcon } from 'lucide-react';
-import { AddNewLaunchModal } from '@/components/studio/AddNewLaunchModal';
+import { AddNewLaunchModal } from '@/components/admin-portal/AddNewLaunchModal';
 import { useToast } from '@/hooks/use-toast';
 import { getNewLaunches } from '@/data/mockData';
 
-const StudioNewLaunches: React.FC = () => {
+const AdminPortalNewLaunches: React.FC = () => {
   const { products } = useData();
   const { toast } = useToast();
   const [showAddModal, setShowAddModal] = useState(false);
@@ -257,4 +257,4 @@ const StudioNewLaunches: React.FC = () => {
   );
 };
 
-export default StudioNewLaunches;
+export default AdminPortalNewLaunches;
