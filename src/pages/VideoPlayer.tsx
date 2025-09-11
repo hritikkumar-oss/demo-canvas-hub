@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const VideoPlayer = () => {
-  const { productId, videoId } = useParams();
+  const { productSlug, videoSlug, productId, videoId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isAdmin } = useUserRole();
@@ -19,14 +19,20 @@ const VideoPlayer = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   
-  const product = products.find(p => p.id === productId);
-  let video = product?.videos.find(v => v.id === videoId);
+  // Handle both new slug-based routes and legacy ID-based routes
+  const product = productSlug 
+    ? products.find(p => p.slug === productSlug)
+    : products.find(p => p.id === productId);
+  
+  let video = product?.videos.find(v => 
+    videoSlug ? v.slug === videoSlug : v.id === videoId
+  );
   
   // If video not found, fall back to first video in product
   if (!video && product?.videos && product.videos.length > 0) {
     video = product.videos[0];
-    // Update URL to match the fallback video
-    navigate(`/video/${productId}/${video.id}`, { replace: true });
+    // Update URL to match the fallback video using new slug format
+    navigate(`/product/${product.slug}/video/${video.slug}`, { replace: true });
   }
   
   const currentVideoIndex = video ? product?.videos.findIndex(v => v.id === video.id) ?? 0 : 0;
@@ -54,12 +60,14 @@ const VideoPlayer = () => {
   // Use existing videos from the product (they already have 8-10 mock videos)
   const lessons = product.videos;
 
-  const handleLessonClick = (lessonId: string) => {
-    navigate(`/video/${productId}/${lessonId}`);
+  const handleLessonClick = (lesson: any) => {
+    navigate(`/product/${product.slug}/video/${lesson.slug}`);
   };
 
   const handleShare = () => {
-    const videoUrl = `${window.location.origin}/video/${productId}/${videoId}`;
+    const currentVideoSlug = videoSlug || video?.slug;
+    const currentProductSlug = productSlug || product?.slug;
+    const videoUrl = `${window.location.origin}/product/${currentProductSlug}/video/${currentVideoSlug}`;
     navigator.clipboard.writeText(videoUrl).then(() => {
       toast({
         title: "Link copied!",
@@ -96,16 +104,16 @@ const VideoPlayer = () => {
                     <div
                       key={lesson.id}
                       className={`cursor-pointer transition-all rounded-lg p-3 mx-2 mb-2 ${
-                        lesson.id === videoId 
+                        (videoSlug ? lesson.slug === videoSlug : lesson.id === videoId)
                           ? 'bg-primary/20 border border-primary' 
                           : 'hover:bg-gray-800 bg-gray-800/50'
                       }`}
-                      onClick={() => handleLessonClick(lesson.id)}
+                      onClick={() => handleLessonClick(lesson)}
                     >
                       <div className="flex items-start space-x-3">
                         {/* Lesson Number */}
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
-                          lesson.id === videoId 
+                          (videoSlug ? lesson.slug === videoSlug : lesson.id === videoId)
                             ? 'bg-primary text-primary-foreground' 
                             : 'bg-gray-700 text-gray-300'
                         }`}>
@@ -115,7 +123,7 @@ const VideoPlayer = () => {
                         {/* Lesson Info */}
                         <div className="flex-1 min-w-0">
                           <h4 className={`font-medium text-sm line-clamp-2 mb-1 ${
-                            lesson.id === videoId ? 'text-primary' : 'text-white'
+                            (videoSlug ? lesson.slug === videoSlug : lesson.id === videoId) ? 'text-primary' : 'text-white'
                           }`}>
                             {lesson.title}
                           </h4>
@@ -124,7 +132,7 @@ const VideoPlayer = () => {
                           </p>
                           <div className="flex items-center space-x-2 text-xs text-gray-400">
                             <span>{lesson.duration}</span>
-                            {lesson.id === videoId && (
+                            {(videoSlug ? lesson.slug === videoSlug : lesson.id === videoId) && (
                               <div className="w-1 h-1 bg-primary rounded-full"></div>
                             )}
                           </div>
@@ -197,7 +205,7 @@ const VideoPlayer = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => handleLessonClick(lessons[currentVideoIndex - 1].id)}
+                        onClick={() => handleLessonClick(lessons[currentVideoIndex - 1])}
                       >
                         <ChevronLeft className="w-4 h-4 mr-2" />
                         Previous
@@ -206,7 +214,7 @@ const VideoPlayer = () => {
                     {currentVideoIndex < lessons.length - 1 && (
                       <Button 
                         size="sm"
-                        onClick={() => handleLessonClick(lessons[currentVideoIndex + 1].id)}
+                        onClick={() => handleLessonClick(lessons[currentVideoIndex + 1])}
                       >
                         Next
                         <ChevronRight className="w-4 h-4 ml-2" />
@@ -226,7 +234,7 @@ const VideoPlayer = () => {
         onClose={() => setInviteModalOpen(false)}
         type="video"
         title={video.title}
-        itemId={videoId}
+        itemId={videoSlug || videoId}
       />
     </div>
   );

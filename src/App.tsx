@@ -40,8 +40,11 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/invite/:token" element={<AuthGate />} />
               <Route path="/" element={<Home />} />
-              <Route path="/product/:productId" element={<ProductDetail />} />
-              <Route path="/product/:productId/tutorial/:videoId" element={<TutorialViewer />} />
+              <Route path="/product/:productSlug" element={<ProductDetail />} />
+              <Route path="/product/:productSlug/tutorial/:videoSlug" element={<TutorialViewer />} />
+              <Route path="/product/:productSlug/video/:videoSlug" element={<VideoPlayer />} />
+              
+              {/* Legacy routes - redirect old format to new */}
               <Route path="/video/:productId/:videoId" element={<VideoPlayer />} />
               <Route path="/new-launches" element={<NewLaunches />} />
               <Route path="/playlists" element={<Playlists />} />

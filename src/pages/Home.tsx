@@ -123,6 +123,7 @@ const Home = () => {
               {isAdminMode ? (
                 <EditableVideoCard
                   id={product.id}
+                  slug={product.slug}
                   title={product.title}
                   thumbnail={product.thumbnail}
                   duration={product.totalDuration}
@@ -135,6 +136,7 @@ const Home = () => {
               ) : (
                 <VideoCard
                   id={product.id}
+                  slug={product.slug}
                   title={product.title}
                   thumbnail={product.thumbnail}
                   duration={product.totalDuration}

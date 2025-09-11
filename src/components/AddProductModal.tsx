@@ -99,6 +99,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
 
     addProduct({
       title: formData.title,
+      slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
       description: formData.description,
       thumbnail: formData.thumbnail,
       category: formData.category || 'General',

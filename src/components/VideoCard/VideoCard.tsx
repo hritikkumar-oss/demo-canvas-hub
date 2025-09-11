@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 interface VideoCardProps {
   id: string;
+  slug?: string;
   title: string;
   thumbnail: string;
   duration: string;
@@ -17,6 +18,7 @@ interface VideoCardProps {
 
 const VideoCard = ({ 
   id,
+  slug,
   title, 
   thumbnail, 
   duration, 
@@ -32,7 +34,7 @@ const VideoCard = ({
     if (onClick) {
       onClick();
     } else {
-      navigate(`/product/${id}`);
+      navigate(`/product/${slug || id}`);
     }
   };
   if (viewMode === "list") {

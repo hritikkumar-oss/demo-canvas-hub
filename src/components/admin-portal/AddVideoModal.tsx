@@ -53,6 +53,7 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
 
     addVideo(formData.productId, {
       title: formData.title,
+      slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
       description: formData.description,
       duration: formData.duration || "0:00",
       thumbnail: thumbnailPreview || '/placeholder.svg',

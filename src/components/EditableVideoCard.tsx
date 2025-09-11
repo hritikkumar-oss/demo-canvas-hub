@@ -8,6 +8,7 @@ import { useData } from '@/contexts/DataContext';
 
 interface EditableVideoCardProps {
   id: string;
+  slug?: string;
   title: string;
   thumbnail: string;
   duration: string;
@@ -68,7 +69,7 @@ const EditableVideoCard: React.FC<EditableVideoCardProps> = (props) => {
           category: props.category,
           duration: props.duration,
           lessonCount: props.lessonCount,
-          redirectLink: `/product/${props.id}`,
+          redirectLink: `/product/${props.slug || props.id}`,
         }}
       />
     </div>

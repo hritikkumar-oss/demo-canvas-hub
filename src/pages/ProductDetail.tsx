@@ -12,12 +12,14 @@ import { useAdminMode } from "@/hooks/useAdminMode";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const ProductDetail = () => {
-  const { productId } = useParams();
+  const { productSlug, productId } = useParams();
   const navigate = useNavigate();
   const { products } = useData();
   const { isAdminMode, isViewerMode } = useAdminMode();
   const { isAdmin } = useUserRole();
-  const product = products.find(p => p.id === productId);
+  const product = productSlug 
+    ? products.find(p => p.slug === productSlug)
+    : products.find(p => p.id === productId);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -100,8 +102,8 @@ const ProductDetail = () => {
                 <div 
                   className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer"
                    onClick={() => {
-                     if (firstVideo) {
-                       navigate(`/video/${productId}/${firstVideo.id}`);
+                     if (firstVideo && product) {
+                       navigate(`/product/${product.slug}/video/${firstVideo.slug}`);
                      }
                    }}
                 >
@@ -164,7 +166,7 @@ const ProductDetail = () => {
                       description={video.description}
                       viewMode={viewMode}
                        onClick={() => {
-                         navigate(`/video/${productId}/${video.id}`);
+                         navigate(`/product/${product.slug}/video/${video.slug}`);
                        }}
                       onAddToPlaylist={() => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
@@ -181,7 +183,7 @@ const ProductDetail = () => {
                       category="Tutorial"
                       viewMode={viewMode}
                        onClick={() => {
-                         navigate(`/video/${productId}/${video.id}`);
+                         navigate(`/product/${product.slug}/video/${video.slug}`);
                        }}
                       onAddToPlaylist={isAdmin && !isViewerMode ? () => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
@@ -233,7 +235,7 @@ const ProductDetail = () => {
         onClose={() => setInviteModalOpen(false)}
         type="product"
         title={product?.title}
-        itemId={productId}
+        itemId={productSlug || productId}
       />
     </div>
   );

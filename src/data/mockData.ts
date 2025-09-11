@@ -6,6 +6,7 @@ import websiteThumb from "@/assets/thumbnails/website.jpg";
 
 export interface Video {
   id: string;
+  slug: string;
   title: string;
   description: string;
   duration: string;
@@ -30,6 +31,7 @@ export interface Playlist {
 
 export interface Product {
   id: string;
+  slug: string;
   title: string;
   description: string;
   category: string;
@@ -51,6 +53,7 @@ const generateMockVideos = (productId: string, thumbnail: string, count: number 
 
   return Array.from({ length: Math.min(count, videoTopics.length) }, (_, index) => ({
     id: `${productId}-video-${index + 1}`,
+    slug: `${videoTopics[index].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`,
     title: `${videoTopics[index]}`,
     description: `Learn about ${videoTopics[index].toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
     duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
@@ -105,6 +108,7 @@ const nextGenSFALessons = [
 const generateNextGenSFAVideos = (): Video[] => {
   return nextGenSFALessons.map((title, index) => ({
     id: `nextgen-sfa-video-${index + 1}`,
+    slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
     title,
     description: `Learn about ${title.toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
     duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
@@ -119,6 +123,7 @@ const generateNextGenSFAVideos = (): Video[] => {
 export const mockProducts: Product[] = [
   {
     id: "nextgen-sfa",
+    slug: "nextgen-sfa",
     title: "NextGen SFA",
     description: "Comprehensive guide to Next Generation Sales Force Automation",
     category: "Sales",
@@ -129,74 +134,81 @@ export const mockProducts: Product[] = [
     videos: generateNextGenSFAVideos()
   },
   {
-    id: "crm",
-    title: "CRM",
-    description: "Master customer relationship management with our CRM tools",
-    category: "Sales",
-    thumbnail: crmThumb,
-    totalDuration: "6 hours 45 minutes",
-    lessonCount: 10,
-    videos: generateMockVideos("crm", crmThumb)
-  },
-  {
-    id: "ecommerce",
-    title: "eCommerce",
-    description: "Build and manage your online store with powerful e-commerce features",
-    category: "Commerce",
+    id: "ai-powered-eb2b",
+    slug: "ai-powered-eb2b",
+    title: "AI powered eB2B",
+    description: "Master AI-powered B2B e-commerce solutions",
+    category: "AI",
     thumbnail: ecommerceThumb,
     totalDuration: "7 hours 12 minutes",
     lessonCount: 9,
-    videos: generateMockVideos("ecommerce", ecommerceThumb, 9)
+    videos: generateMockVideos("ai-powered-eb2b", ecommerceThumb, 9)
   },
   {
-    id: "website",
-    title: "Website Builder",
-    description: "Create stunning websites with our drag-and-drop builder",
-    category: "Design",
+    id: "nextgen-dms",
+    slug: "nextgen-dms",
+    title: "NextGen DMS",
+    description: "Advanced dealer management system for modern businesses",
+    category: "Management",
+    thumbnail: crmThumb,
+    totalDuration: "6 hours 45 minutes",
+    lessonCount: 10,
+    videos: generateMockVideos("nextgen-dms", crmThumb)
+  },
+  {
+    id: "scai-ai-agent",
+    slug: "scai-ai-agent",
+    title: "SCAI - AI Agent",
+    description: "Intelligent AI agent for sales and customer interactions",
+    category: "AI",
     thumbnail: websiteThumb,
     totalDuration: "5 hours 30 minutes",
     lessonCount: 8,
-    videos: generateMockVideos("website", websiteThumb, 8)
+    videos: generateMockVideos("scai-ai-agent", websiteThumb, 8)
   },
   {
-    id: "accounting",
-    title: "Accounting and Invoicing",
-    description: "Manage your finances with integrated accounting tools",
-    category: "Finance",
+    id: "ai-promo-co-pilot",
+    slug: "ai-promo-co-pilot",
+    title: "AI promo co-pilot",
+    description: "AI-powered promotional campaign management",
+    category: "AI",
     thumbnail: gettingStartedThumb,
     totalDuration: "4 hours 22 minutes",
     lessonCount: 8,
-    videos: generateMockVideos("accounting", gettingStartedThumb, 8)
+    videos: generateMockVideos("ai-promo-co-pilot", gettingStartedThumb, 8)
   },
   {
-    id: "inventory",
-    title: "Inventory Management",
-    description: "Track and manage your inventory with advanced tools",
-    category: "Operations",
+    id: "supervisor",
+    slug: "supervisor",
+    title: "Supervisor",
+    description: "Advanced supervision and management tools",
+    category: "Management",
     thumbnail: crmThumb,
     totalDuration: "5 hours 15 minutes",
     lessonCount: 9,
-    videos: generateMockVideos("inventory", crmThumb, 9)
+    videos: generateMockVideos("supervisor", crmThumb, 9)
   },
   {
-    id: "pos",
-    title: "Point of Sale",
-    description: "Process transactions with our integrated POS system",
-    category: "Sales",
+    id: "sales-lens",
+    slug: "sales-lens",
+    title: "Sales Lens",
+    description: "Advanced sales analytics and insights platform",
+    category: "Analytics",
     thumbnail: ecommerceThumb,
     totalDuration: "3 hours 45 minutes",
     lessonCount: 8,
-    videos: generateMockVideos("pos", ecommerceThumb, 8)
+    videos: generateMockVideos("sales-lens", ecommerceThumb, 8)
   },
   {
-    id: "manufacturing",
-    title: "MRP - Manufacturing & Shop Floor",
-    description: "Streamline your manufacturing processes",
-    category: "Operations",
+    id: "salescode-studio",
+    slug: "salescode-studio",
+    title: "Salescode Studio",
+    description: "Comprehensive sales development and training platform",
+    category: "Training",
     thumbnail: websiteThumb,
     totalDuration: "6 hours 30 minutes",
     lessonCount: 10,
-    videos: generateMockVideos("manufacturing", websiteThumb)
+    videos: generateMockVideos("salescode-studio", websiteThumb)
   }
 ];
 
