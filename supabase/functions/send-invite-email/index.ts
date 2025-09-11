@@ -1,6 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.56.1";
 
+// Helper function to convert base64url to standard base64
+function base64UrlToBase64(b64url: string | null | undefined): string | null | undefined {
+  if (!b64url) return b64url;
+  let s = b64url.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  return s;
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -63,8 +71,11 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error(`Failed to create invite: ${inviteError.message}`);
     }
 
+    // Convert token to standard base64 if it's base64url format
+    const standardToken = base64UrlToBase64(invite.token) || invite.token;
+    
     // Generate invite URL
-    const inviteUrl = `${Deno.env.get("SITE_URL") || "http://localhost:5173"}/invite/${invite.token}`;
+    const inviteUrl = `${Deno.env.get("SITE_URL") || "http://localhost:5173"}/invite/${standardToken}`;
 
     // Create HTML email content
     const subject = resourceTitle 
