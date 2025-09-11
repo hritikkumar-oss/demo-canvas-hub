@@ -65,7 +65,7 @@ const VideoCardWithMenu = ({
     return (
       <Card 
         className="group cursor-pointer transition-all duration-300 hover:shadow-md hover:shadow-primary/10 animate-fade-in"
-        onClick={() => window.location.href = `/video/${id.split('-')[0]}/${id}`}
+        onClick={onClick}
       >
         <CardContent className="p-4">
           <div className="flex items-start space-x-4">
@@ -148,7 +148,7 @@ const VideoCardWithMenu = ({
   return (
     <Card 
       className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 animate-fade-in h-full flex flex-col"
-      onClick={() => window.location.href = `/video/${id.split('-')[0]}/${id}`}
+      onClick={onClick}
     >
       <CardContent className="p-0 flex flex-col h-full">
         {/* Thumbnail Container */}

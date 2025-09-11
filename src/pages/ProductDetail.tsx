@@ -103,7 +103,6 @@ const ProductDetail = () => {
                   className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer"
                    onClick={() => {
                       if (firstVideo && product) {
-                        console.log('Navigating to:', `/product/${product.slug}/video/${firstVideo.slug}`);
                         navigate(`/product/${product.slug}/video/${firstVideo.slug}`);
                       }
                     }}
@@ -167,7 +166,6 @@ const ProductDetail = () => {
                       description={video.description}
                       viewMode={viewMode}
                        onClick={() => {
-                          console.log('Navigating to:', `/product/${product.slug}/video/${video.slug}`);
                           navigate(`/product/${product.slug}/video/${video.slug}`);
                         }}
                       onAddToPlaylist={() => {
@@ -185,7 +183,6 @@ const ProductDetail = () => {
                       category="Tutorial"
                       viewMode={viewMode}
                        onClick={() => {
-                          console.log('Navigating to:', `/product/${product.slug}/video/${video.slug}`);
                           navigate(`/product/${product.slug}/video/${video.slug}`);
                         }}
                       onAddToPlaylist={isAdmin && !isViewerMode ? () => {
