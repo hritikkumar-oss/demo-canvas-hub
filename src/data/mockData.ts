@@ -58,7 +58,7 @@ const generateMockVideos = (productId: string, thumbnail: string, count: number 
     description: `Learn about ${videoTopics[index].toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
     duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
     thumbnail,
-    videoUrl: `https://www.youtube.com/embed/dQw4w9WgXcQ?si=${productId}${index}&autoplay=0&rel=0`,
+    videoUrl: `https://www.youtube.com/embed/YDU67jBVlXM?autoplay=0&rel=0&modestbranding=1`,
     productId,
     createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     isNew: Math.random() > 0.7
@@ -113,7 +113,7 @@ const generateNextGenSFAVideos = (): Video[] => {
     description: `Learn about ${title.toLowerCase()} in this comprehensive tutorial. This lesson covers essential concepts and practical implementation strategies.`,
     duration: `${Math.floor(Math.random() * 20) + 5}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
     thumbnail: gettingStartedThumb,
-    videoUrl: `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&rel=0&modestbranding=1`,
+    videoUrl: `https://www.youtube.com/embed/YDU67jBVlXM?autoplay=0&rel=0&modestbranding=1`,
     productId: "nextgen-sfa",
     createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
     isNew: Math.random() > 0.8
