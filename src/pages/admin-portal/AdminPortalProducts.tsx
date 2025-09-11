@@ -199,12 +199,27 @@ const AdminPortalProducts: React.FC = () => {
         </CardContent>
       </Card>
 
-      <AddProductModal open={showAddModal} onOpenChange={setShowAddModal} />
+      <AddProductModal 
+        isOpen={showAddModal} 
+        onClose={() => setShowAddModal(false)} 
+      />
       {editingProduct && (
         <EditCardModal
-          open={!!editingProduct}
-          onOpenChange={(open) => !open && setEditingProduct(null)}
-          card={editingProduct}
+          isOpen={!!editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onSave={(data) => {
+            // Handle save logic here
+            setEditingProduct(null);
+          }}
+          initialData={{
+            title: editingProduct.title,
+            description: editingProduct.description,
+            thumbnail: editingProduct.thumbnail,
+            category: editingProduct.category,
+            duration: editingProduct.totalDuration,
+            lessonCount: editingProduct.lessonCount,
+            redirectLink: `/product/${editingProduct.id}`,
+          }}
           type="product"
         />
       )}

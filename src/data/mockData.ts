@@ -129,74 +129,74 @@ export const mockProducts: Product[] = [
     videos: generateNextGenSFAVideos()
   },
   {
-    id: "crm",
-    title: "CRM",
-    description: "Master customer relationship management with our CRM tools",
-    category: "Sales",
+    id: "ai-powered-eb2b",
+    title: "AI powered eB2B",
+    description: "AI-enhanced B2B platform for intelligent business operations",
+    category: "AI/B2B",
     thumbnail: crmThumb,
     totalDuration: "6 hours 45 minutes",
     lessonCount: 10,
-    videos: generateMockVideos("crm", crmThumb)
+    videos: generateMockVideos("ai-powered-eb2b", crmThumb)
   },
   {
-    id: "ecommerce",
-    title: "eCommerce",
-    description: "Build and manage your online store with powerful e-commerce features",
-    category: "Commerce",
+    id: "nextgen-dms",
+    title: "NextGen DMS",
+    description: "Document Management System with advanced features",
+    category: "Document Management",
     thumbnail: ecommerceThumb,
     totalDuration: "7 hours 12 minutes",
     lessonCount: 9,
-    videos: generateMockVideos("ecommerce", ecommerceThumb, 9)
+    videos: generateMockVideos("nextgen-dms", ecommerceThumb, 9)
   },
   {
-    id: "website",
-    title: "Website Builder",
-    description: "Create stunning websites with our drag-and-drop builder",
-    category: "Design",
+    id: "scai-ai-agent",
+    title: "SCAI - AI Agent",
+    description: "Smart Customer AI Agent for automated support",
+    category: "AI/Customer Service",
     thumbnail: websiteThumb,
     totalDuration: "5 hours 30 minutes",
     lessonCount: 8,
-    videos: generateMockVideos("website", websiteThumb, 8)
+    videos: generateMockVideos("scai-ai-agent", websiteThumb, 8)
   },
   {
-    id: "accounting",
-    title: "Accounting and Invoicing",
-    description: "Manage your finances with integrated accounting tools",
-    category: "Finance",
+    id: "ai-promo-co-pilot",
+    title: "AI promo co-pilot",
+    description: "AI-powered promotional campaign management and optimization",
+    category: "AI/Marketing",
     thumbnail: gettingStartedThumb,
     totalDuration: "4 hours 22 minutes",
     lessonCount: 8,
-    videos: generateMockVideos("accounting", gettingStartedThumb, 8)
+    videos: generateMockVideos("ai-promo-co-pilot", gettingStartedThumb, 8)
   },
   {
-    id: "inventory",
-    title: "Inventory Management",
-    description: "Track and manage your inventory with advanced tools",
-    category: "Operations",
+    id: "supervisor",
+    title: "Supervisor",
+    description: "Comprehensive supervision and management platform",
+    category: "Management",
     thumbnail: crmThumb,
     totalDuration: "5 hours 15 minutes",
     lessonCount: 9,
-    videos: generateMockVideos("inventory", crmThumb, 9)
+    videos: generateMockVideos("supervisor", crmThumb, 9)
   },
   {
-    id: "pos",
-    title: "Point of Sale",
-    description: "Process transactions with our integrated POS system",
-    category: "Sales",
+    id: "sales-lens",
+    title: "Sales Lens",
+    description: "Advanced sales analytics and performance insights",
+    category: "Sales Analytics",
     thumbnail: ecommerceThumb,
     totalDuration: "3 hours 45 minutes",
     lessonCount: 8,
-    videos: generateMockVideos("pos", ecommerceThumb, 8)
+    videos: generateMockVideos("sales-lens", ecommerceThumb, 8)
   },
   {
-    id: "manufacturing",
-    title: "MRP - Manufacturing & Shop Floor",
-    description: "Streamline your manufacturing processes",
-    category: "Operations",
+    id: "salescode-studio",
+    title: "Salescode Studio",
+    description: "Integrated development environment for sales automation",
+    category: "Development",
     thumbnail: websiteThumb,
     totalDuration: "6 hours 30 minutes",
     lessonCount: 10,
-    videos: generateMockVideos("manufacturing", websiteThumb)
+    videos: generateMockVideos("salescode-studio", websiteThumb)
   }
 ];
 
