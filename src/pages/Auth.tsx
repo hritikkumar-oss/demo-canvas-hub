@@ -5,11 +5,17 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { GoogleButton } from '@/components/auth/GoogleButton';
-import { EmailForm } from '@/components/auth/EmailForm';
-import { OtpForm } from '@/components/auth/OtpForm';
+import { MagicLinkForm } from '@/components/auth/MagicLinkForm';
+import { MagicLinkSentState } from '@/components/auth/MagicLinkSentState';
 import { SuccessState } from '@/components/auth/SuccessState';
 
-type AuthStep = 'email' | 'otp' | 'success';
+type AuthStep = 'email' | 'magic-link-sent' | 'success';
+
+// Analytics helper
+const trackEvent = (eventName: string, properties?: Record<string, any>) => {
+  // Placeholder for analytics tracking
+  console.log('Analytics:', eventName, properties);
+};
 
 const Auth = () => {
   const [step, setStep] = useState<AuthStep>('email');
@@ -58,16 +64,17 @@ const Auth = () => {
     }
   };
 
-  const handleEmailSubmit = async (emailAddress: string) => {
+  const handleMagicLinkSubmit = async (emailAddress: string) => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email: emailAddress,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth`
+          emailRedirectTo: `${window.location.origin}/`
         }
       });
 
       if (error) {
+        trackEvent('auth_magiclink_failed', { email: emailAddress, error: error.message });
         toast({
           title: "Error",
           description: error.message,
@@ -77,48 +84,29 @@ const Auth = () => {
       }
 
       setEmail(emailAddress);
-      setStep('otp');
-      toast({
-        title: "OTP Sent",
-        description: `Verification code sent to ${emailAddress}`,
-      });
+      setStep('magic-link-sent');
+      trackEvent('auth_magiclink_sent', { email: emailAddress });
     } catch (error) {
+      trackEvent('auth_magiclink_failed', { email: emailAddress, error: 'Unknown error' });
       toast({
         title: "Error",
-        description: "Failed to send verification code",
+        description: "Failed to send magic link",
         variant: "destructive"
       });
     }
   };
 
-  const handleOtpVerify = async (otp: string) => {
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: otp,
-        type: 'email'
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      setStep('success');
-    } catch (error) {
-      throw error; // Re-throw to be handled by OtpForm
-    }
-  };
-
-  const handleOtpResend = async () => {
+  const handleMagicLinkResend = async () => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth`
+          emailRedirectTo: `${window.location.origin}/`
         }
       });
 
       if (error) {
+        trackEvent('auth_magiclink_failed', { email, error: error.message });
         toast({
           title: "Error",
           description: error.message,
@@ -127,14 +115,16 @@ const Auth = () => {
         return;
       }
 
+      trackEvent('auth_magiclink_resend', { email });
       toast({
-        title: "OTP Sent",
-        description: `New verification code sent to ${email}`,
+        title: "Magic link sent",
+        description: "Check your inbox for the new magic link",
       });
     } catch (error) {
+      trackEvent('auth_magiclink_failed', { email, error: 'Resend failed' });
       toast({
         title: "Error",
-        description: "Failed to resend verification code",
+        description: "Failed to resend magic link",
         variant: "destructive"
       });
     }
@@ -179,18 +169,17 @@ const Auth = () => {
                 </div>
               </div>
 
-              <EmailForm onSubmit={handleEmailSubmit} />
+              <MagicLinkForm onSubmit={handleMagicLinkSubmit} />
             </div>
           </div>
         );
 
-      case 'otp':
+      case 'magic-link-sent':
         return (
-          <OtpForm
+          <MagicLinkSentState
             email={email}
-            onVerify={handleOtpVerify}
-            onBack={handleBackToEmail}
-            onResend={handleOtpResend}
+            onResend={handleMagicLinkResend}
+            onChangeEmail={handleBackToEmail}
           />
         );
 
