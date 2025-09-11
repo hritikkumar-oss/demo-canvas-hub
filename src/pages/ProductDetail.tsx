@@ -12,12 +12,12 @@ import { useAdminMode } from "@/hooks/useAdminMode";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const ProductDetail = () => {
-  const { productId } = useParams();
+  const { productSlug } = useParams();
   const navigate = useNavigate();
   const { products } = useData();
   const { isAdminMode, isViewerMode } = useAdminMode();
   const { isAdmin } = useUserRole();
-  const product = products.find(p => p.id === productId);
+  const product = products.find(p => p.id === productSlug);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -101,7 +101,7 @@ const ProductDetail = () => {
                   className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer"
                    onClick={() => {
                      if (firstVideo) {
-                       navigate(`/video/${productId}/${firstVideo.id}`);
+                       navigate(`/video/${productSlug}/${firstVideo.id}`);
                      }
                    }}
                 >
@@ -164,7 +164,7 @@ const ProductDetail = () => {
                       description={video.description}
                       viewMode={viewMode}
                        onClick={() => {
-                         navigate(`/video/${productId}/${video.id}`);
+                         navigate(`/video/${productSlug}/${video.id}`);
                        }}
                       onAddToPlaylist={() => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
@@ -181,7 +181,7 @@ const ProductDetail = () => {
                       category="Tutorial"
                       viewMode={viewMode}
                        onClick={() => {
-                         navigate(`/video/${productId}/${video.id}`);
+                         navigate(`/video/${productSlug}/${video.id}`);
                        }}
                       onAddToPlaylist={isAdmin && !isViewerMode ? () => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
@@ -233,7 +233,7 @@ const ProductDetail = () => {
         onClose={() => setInviteModalOpen(false)}
         type="product"
         title={product?.title}
-        itemId={productId}
+        itemId={productSlug}
       />
     </div>
   );

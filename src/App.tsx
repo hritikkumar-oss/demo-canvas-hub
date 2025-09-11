@@ -40,9 +40,9 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/invite/:token" element={<AuthGate />} />
               <Route path="/" element={<Home />} />
-              <Route path="/product/:productId" element={<ProductDetail />} />
-              <Route path="/product/:productId/tutorial/:videoId" element={<TutorialViewer />} />
-              <Route path="/video/:productId/:videoId" element={<VideoPlayer />} />
+              <Route path="/product/:productSlug" element={<ProductDetail />} />
+              <Route path="/product/:productSlug/tutorial/:videoSlug" element={<TutorialViewer />} />
+              <Route path="/video/:productSlug/:videoSlug" element={<VideoPlayer />} />
               <Route path="/new-launches" element={<NewLaunches />} />
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/playlists/:playlistId" element={<PlaylistDetail />} />
@@ -63,6 +63,12 @@ const App = () => (
               
               {/* Redirect old studio routes to admin-portal */}
               <Route path="/studio/*" element={<Navigate to="/admin-portal" replace />} />
+              
+              {/* Legacy URL redirects for old product/video IDs */}
+              <Route path="/product/nextgen-sfa/*" element={<Navigate to="/product/nextgen-sfa" replace />} />
+              <Route path="/video/nextgen-sfa/*" element={<Navigate to="/video/nextgen-sfa" replace />} />
+              <Route path="/product/ai-powered-eb2b/*" element={<Navigate to="/product/ai-powered-eb2b" replace />} />
+              <Route path="/video/ai-powered-eb2b/*" element={<Navigate to="/video/ai-powered-eb2b" replace />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

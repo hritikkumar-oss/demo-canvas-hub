@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const VideoPlayer = () => {
-  const { productId, videoId } = useParams();
+  const { productSlug, videoSlug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isAdmin } = useUserRole();
@@ -19,14 +19,14 @@ const VideoPlayer = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   
-  const product = products.find(p => p.id === productId);
-  let video = product?.videos.find(v => v.id === videoId);
+  const product = products.find(p => p.id === productSlug);
+  let video = product?.videos.find(v => v.id === videoSlug);
   
   // If video not found, fall back to first video in product
   if (!video && product?.videos && product.videos.length > 0) {
     video = product.videos[0];
     // Update URL to match the fallback video
-    navigate(`/video/${productId}/${video.id}`, { replace: true });
+    navigate(`/video/${productSlug}/${video.id}`, { replace: true });
   }
   
   const currentVideoIndex = video ? product?.videos.findIndex(v => v.id === video.id) ?? 0 : 0;
@@ -55,11 +55,11 @@ const VideoPlayer = () => {
   const lessons = product.videos;
 
   const handleLessonClick = (lessonId: string) => {
-    navigate(`/video/${productId}/${lessonId}`);
+    navigate(`/video/${productSlug}/${lessonId}`);
   };
 
   const handleShare = () => {
-    const videoUrl = `${window.location.origin}/video/${productId}/${videoId}`;
+    const videoUrl = `${window.location.origin}/video/${productSlug}/${videoSlug}`;
     navigator.clipboard.writeText(videoUrl).then(() => {
       toast({
         title: "Link copied!",
@@ -96,7 +96,7 @@ const VideoPlayer = () => {
                     <div
                       key={lesson.id}
                       className={`cursor-pointer transition-all rounded-lg p-3 mx-2 mb-2 ${
-                        lesson.id === videoId 
+                        lesson.id === videoSlug 
                           ? 'bg-primary/20 border border-primary' 
                           : 'hover:bg-gray-800 bg-gray-800/50'
                       }`}
@@ -105,7 +105,7 @@ const VideoPlayer = () => {
                       <div className="flex items-start space-x-3">
                         {/* Lesson Number */}
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
-                          lesson.id === videoId 
+                          lesson.id === videoSlug 
                             ? 'bg-primary text-primary-foreground' 
                             : 'bg-gray-700 text-gray-300'
                         }`}>
@@ -115,7 +115,7 @@ const VideoPlayer = () => {
                         {/* Lesson Info */}
                         <div className="flex-1 min-w-0">
                           <h4 className={`font-medium text-sm line-clamp-2 mb-1 ${
-                            lesson.id === videoId ? 'text-primary' : 'text-white'
+                            lesson.id === videoSlug ? 'text-primary' : 'text-white'
                           }`}>
                             {lesson.title}
                           </h4>
@@ -124,7 +124,7 @@ const VideoPlayer = () => {
                           </p>
                           <div className="flex items-center space-x-2 text-xs text-gray-400">
                             <span>{lesson.duration}</span>
-                            {lesson.id === videoId && (
+                            {lesson.id === videoSlug && (
                               <div className="w-1 h-1 bg-primary rounded-full"></div>
                             )}
                           </div>
@@ -147,7 +147,7 @@ const VideoPlayer = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => navigate(`/product/${productId}`)}
+                  onClick={() => navigate(`/product/${productSlug}`)}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to {product.title}
@@ -226,7 +226,7 @@ const VideoPlayer = () => {
         onClose={() => setInviteModalOpen(false)}
         type="video"
         title={video.title}
-        itemId={videoId}
+        itemId={videoSlug}
       />
     </div>
   );
