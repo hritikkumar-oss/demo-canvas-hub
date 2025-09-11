@@ -102,10 +102,11 @@ const ProductDetail = () => {
                 <div 
                   className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center group hover:bg-black/30 transition-colors cursor-pointer"
                    onClick={() => {
-                     if (firstVideo && product) {
-                       navigate(`/product/${product.slug}/video/${firstVideo.slug}`);
-                     }
-                   }}
+                      if (firstVideo && product) {
+                        console.log('Navigating to:', `/product/${product.slug}/video/${firstVideo.slug}`);
+                        navigate(`/product/${product.slug}/video/${firstVideo.slug}`);
+                      }
+                    }}
                 >
                   <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
                     <Play className="w-8 h-8 text-primary ml-1" fill="currentColor" />
@@ -166,8 +167,9 @@ const ProductDetail = () => {
                       description={video.description}
                       viewMode={viewMode}
                        onClick={() => {
-                         navigate(`/product/${product.slug}/video/${video.slug}`);
-                       }}
+                          console.log('Navigating to:', `/product/${product.slug}/video/${video.slug}`);
+                          navigate(`/product/${product.slug}/video/${video.slug}`);
+                        }}
                       onAddToPlaylist={() => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
                         setPlaylistModalOpen(true);
@@ -183,8 +185,9 @@ const ProductDetail = () => {
                       category="Tutorial"
                       viewMode={viewMode}
                        onClick={() => {
-                         navigate(`/product/${product.slug}/video/${video.slug}`);
-                       }}
+                          console.log('Navigating to:', `/product/${product.slug}/video/${video.slug}`);
+                          navigate(`/product/${product.slug}/video/${video.slug}`);
+                        }}
                       onAddToPlaylist={isAdmin && !isViewerMode ? () => {
                         setSelectedVideoForPlaylist({ id: video.id, title: video.title });
                         setPlaylistModalOpen(true);
