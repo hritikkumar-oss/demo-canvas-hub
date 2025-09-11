@@ -45,6 +45,7 @@ const App = () => (
               <Route path="/product/:productSlug/video/:videoSlug" element={<VideoPlayer />} />
               
               {/* Legacy routes - redirect old format to new */}
+              <Route path="/video/:productCategory/:videoId" element={<Navigate to="/" replace />} />
               <Route path="/video/:productId/:videoId" element={<VideoPlayer />} />
               <Route path="/new-launches" element={<NewLaunches />} />
               <Route path="/playlists" element={<Playlists />} />

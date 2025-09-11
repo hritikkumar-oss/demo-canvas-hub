@@ -33,8 +33,8 @@ interface DataProviderProps {
 }
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [playlists, setPlaylists] = useState<Playlist[]>(mockPlaylists);
+  const [products, setProducts] = useState<Product[]>(mockProducts || []);
+  const [playlists, setPlaylists] = useState<Playlist[]>(mockPlaylists || []);
 
   const updateProduct = (id: string, updates: Partial<Product>) => {
     setProducts(prev => prev.map(product => 
