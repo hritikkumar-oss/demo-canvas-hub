@@ -111,7 +111,9 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log(`Sending admin invite to: ${normalizedEmail}`);
+    console.log(`[DEBUG] Sending admin invite to: ${normalizedEmail}`);
+    console.log(`[DEBUG] Using SUPABASE_URL: ${Deno.env.get("SUPABASE_URL")}`);
+    console.log(`[DEBUG] Service role key present: ${!!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`);
 
     // Send invite using Supabase Admin API
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
@@ -122,8 +124,12 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
 
+    // Enhanced debug logging for invite response
+    console.log(`[DEBUG] Invite API response - data:`, JSON.stringify(inviteData, null, 2));
+    console.log(`[DEBUG] Invite API response - error:`, JSON.stringify(inviteError, null, 2));
+
     if (inviteError) {
-      console.error("Supabase invite error:", inviteError);
+      console.error("[ERROR] Supabase invite error:", inviteError);
       return new Response(
         JSON.stringify({ 
           error: "invite_failed", 
@@ -133,7 +139,11 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Admin invite sent successfully:", { email: normalizedEmail, userId: inviteData?.user?.id });
+    console.log("[SUCCESS] Admin invite sent successfully:", { 
+      email: normalizedEmail, 
+      userId: inviteData?.user?.id,
+      timestamp: new Date().toISOString()
+    });
 
     return new Response(
       JSON.stringify({ 
