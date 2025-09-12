@@ -26,8 +26,10 @@ export type Database = {
           name: string | null
           resource_id: string | null
           resource_type: string | null
+          role: string | null
           status: string | null
           token: string | null
+          used: boolean | null
         }
         Insert: {
           accepted_at?: string | null
@@ -40,8 +42,10 @@ export type Database = {
           name?: string | null
           resource_id?: string | null
           resource_type?: string | null
+          role?: string | null
           status?: string | null
           token?: string | null
+          used?: boolean | null
         }
         Update: {
           accepted_at?: string | null
@@ -54,8 +58,10 @@ export type Database = {
           name?: string | null
           resource_id?: string | null
           resource_type?: string | null
+          role?: string | null
           status?: string | null
           token?: string | null
+          used?: boolean | null
         }
         Relationships: []
       }
@@ -91,7 +97,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      hook_restrict_signup_by_invite: {
+        Args: { event: Json }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
