@@ -115,6 +115,32 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DEBUG] Using SUPABASE_URL: ${Deno.env.get("SUPABASE_URL")}`);
     console.log(`[DEBUG] Service role key present: ${!!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`);
 
+    // Check if invite already exists to prevent duplicates
+    const { data: existingInvite, error: checkError } = await supabaseAdmin
+      .from('invites')
+      .select('id, email')
+      .eq('email', normalizedEmail)
+      .single();
+
+    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows found
+      console.error("[ERROR] Error checking existing invite:", checkError);
+      return new Response(
+        JSON.stringify({ 
+          error: "check_failed", 
+          details: "Failed to check existing invites" 
+        }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    if (existingInvite) {
+      console.log(`[INFO] Invite already exists for: ${normalizedEmail}`);
+      return new Response(
+        JSON.stringify({ error: "This email has already been invited." }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     // Send invite using Supabase Admin API
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
       normalizedEmail,
@@ -130,6 +156,17 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (inviteError) {
       console.error("[ERROR] Supabase invite error:", inviteError);
+      
+      // Handle duplicate key errors gracefully
+      const errorMessage = inviteError.message || String(inviteError);
+      if (errorMessage.includes('idx_invites_email_lower') || errorMessage.includes('duplicate key')) {
+        console.log(`[INFO] Duplicate invite attempt detected for: ${normalizedEmail}`);
+        return new Response(
+          JSON.stringify({ error: "This email has already been invited." }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+      
       return new Response(
         JSON.stringify({ 
           error: "invite_failed", 
