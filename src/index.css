@@ -48,6 +48,27 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
+    /* Bottom Alert Component Colors */
+    --alert-success-bg: 158 74% 94%; /* #E6FBF0 */
+    --alert-success-title: 158 75% 38%; /* #0B7A4D */
+    --alert-success-body: 158 66% 33%; /* #135E3B */
+    --alert-success-icon: 158 93% 53%; /* #0BB06F */
+
+    --alert-error-bg: 0 100% 95%; /* #FFECEC */
+    --alert-error-title: 353 75% 29%; /* #7A1820 */
+    --alert-error-body: 353 67% 37%; /* #9C1F25 */
+    --alert-error-icon: 6 78% 57%; /* #E74C3C */
+
+    --alert-warning-bg: 44 100% 95%; /* #FFF7E6 */
+    --alert-warning-title: 44 66% 27%; /* #7A5A1A */
+    --alert-warning-body: 44 68% 33%; /* #8C6B1D */
+    --alert-warning-icon: 41 100% 47%; /* #F0A500 */
+
+    --alert-info-bg: 203 100% 95%; /* #E8F6FF */
+    --alert-info-title: 211 88% 30%; /* #0D4A8A */
+    --alert-info-body: 209 78% 30%; /* #11558A */
+    --alert-info-icon: 203 87% 57%; /* #2B9AF3 */
+
     --sidebar-background: 0 0% 98%;
 
     --sidebar-foreground: 240 5.3% 26.1%;

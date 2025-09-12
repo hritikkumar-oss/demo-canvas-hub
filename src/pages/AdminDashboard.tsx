@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { mockProducts } from "@/data/mockData";
+import { BottomAlertDemo } from "@/components/BottomAlert/BottomAlertDemo";
 
 interface AdminProduct {
   id: string;
@@ -120,6 +121,16 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Bottom Alert Demo */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>BottomAlert Component Demo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BottomAlertDemo />
+          </CardContent>
+        </Card>
 
         {/* Products Section */}
         <Card>
