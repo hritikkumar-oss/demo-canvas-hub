@@ -9,6 +9,7 @@ import { useData } from "@/contexts/DataContext";
 import InviteModal from "@/components/InviteModal";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
+import BackButton from "@/components/BackButton";
 
 const VideoPlayer = () => {
   const { productSlug, videoSlug, productId, videoId } = useParams();
@@ -48,10 +49,7 @@ const VideoPlayer = () => {
         <Header />
         <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Video not found</h1>
-          <Button variant="outline" onClick={() => window.history.back()}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
+          <BackButton fallbackPath="/demo-videos" label="Go Back" variant="outline" />
         </div>
       </div>
     );
@@ -155,10 +153,10 @@ const VideoPlayer = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => navigate(`/product/${productId}`)}
+                  onClick={() => navigate('/demo-videos')}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to {product.title}
+                  Back to Demo Videos
                 </Button>
               </div>
               {isAdmin && (

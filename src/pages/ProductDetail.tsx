@@ -5,6 +5,7 @@ import VideoCardWithMenu from "@/components/VideoCard/VideoCardWithMenu";
 import EditableVideoCardWithMenu from "@/components/EditableVideoCardWithMenu";
 import PlaylistModal from "@/components/PlaylistModal/PlaylistModal";
 import InviteModal from "@/components/InviteModal";
+import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Share2, Play, Grid3X3, List, LayoutGrid } from "lucide-react";
 import { useData } from "@/contexts/DataContext";
@@ -38,10 +39,7 @@ const ProductDetail = () => {
         <Header />
         <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Product not found</h1>
-          <Button variant="outline" onClick={() => window.history.back()}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
+          <BackButton fallbackPath="/" label="Go Back" variant="outline" />
         </div>
       </div>
     );
@@ -56,14 +54,7 @@ const ProductDetail = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-4 mb-6">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => window.history.back()}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
+              <BackButton fallbackPath="/" />
               {isAdmin && !isViewerMode && (
                 <Button 
                   variant="outline" 
@@ -122,7 +113,7 @@ const ProductDetail = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8 animate-fade-in">
             <h2 className="text-2xl font-bold text-foreground">
-              Lessons & Tutorials
+              Demo Videos
             </h2>
             <div className="flex items-center space-x-2">
               <Button

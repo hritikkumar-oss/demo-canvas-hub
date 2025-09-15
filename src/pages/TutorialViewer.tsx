@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { mockProducts } from "@/data/mockData";
 import { ArrowLeft, Share2, Play, Pause, Volume2, Maximize, SkipForward, SkipBack } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 const TutorialViewer = () => {
   const { productId, videoId } = useParams();
@@ -25,10 +26,7 @@ const TutorialViewer = () => {
         <Header />
         <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Tutorial not found</h1>
-          <Button variant="outline" onClick={() => window.history.back()}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
+          <BackButton fallbackPath="/demo-videos" label="Go Back" variant="outline" />
         </div>
       </div>
     );
@@ -45,14 +43,10 @@ const TutorialViewer = () => {
         {/* Breadcrumb and Actions */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => window.history.back()}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to {product.title}
-            </Button>
+            <BackButton 
+              fallbackPath="/demo-videos" 
+              label={`Back to Demo Videos`}
+            />
           </div>
           <Button variant="outline" size="sm">
             <Share2 className="w-4 h-4 mr-2" />

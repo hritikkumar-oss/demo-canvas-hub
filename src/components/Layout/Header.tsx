@@ -48,6 +48,14 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
               Home
             </Link>
             <Link 
+              to={isAdminMode ? "/admin/demo-videos" : isViewerMode ? "/viewer/demo-videos" : "/demo-videos"} 
+              className={`transition-colors font-medium ${
+                isActivePath('/demo-videos') || isActivePath('/admin/demo-videos') || isActivePath('/viewer/demo-videos') ? 'text-primary' : 'text-foreground hover:text-primary'
+              }`}
+            >
+              Demo Videos
+            </Link>
+            <Link 
               to={isAdminMode ? "/admin/new-launches" : isViewerMode ? "/viewer/new-launches" : "/new-launches"} 
               className={`transition-colors font-medium ${
                 isActivePath('/new-launches') || isActivePath('/admin/new-launches') || isActivePath('/viewer/new-launches') ? 'text-primary' : 'text-foreground hover:text-primary'
@@ -139,6 +147,9 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
             <nav className="flex flex-col space-y-4">
               <Link to={isAdminMode ? "/admin/home" : isViewerMode ? "/viewer/home" : "/"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Home
+              </Link>
+              <Link to={isAdminMode ? "/admin/demo-videos" : isViewerMode ? "/viewer/demo-videos" : "/demo-videos"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                Demo Videos
               </Link>
               <Link to={isAdminMode ? "/admin/new-launches" : isViewerMode ? "/viewer/new-launches" : "/new-launches"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 New Launches
