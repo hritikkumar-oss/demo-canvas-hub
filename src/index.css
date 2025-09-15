@@ -156,6 +156,16 @@ All colors MUST be HSL.
     aspect-ratio: 16 / 9;
   }
 
+  /* Scrollbar hide for horizontal scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Animation delays for staggered effects */
   .delay-100 { animation-delay: 100ms; }
   .delay-200 { animation-delay: 200ms; }

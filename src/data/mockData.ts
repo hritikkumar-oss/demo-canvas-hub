@@ -126,7 +126,7 @@ export const mockProducts: Product[] = [
     slug: "nextgen-sfa",
     title: "NextGen SFA",
     description: "Comprehensive guide to Next Generation Sales Force Automation",
-    category: "Sales",
+    category: "SFA",
     thumbnail: gettingStartedThumb,
     totalDuration: "18 hours 30 minutes",
     lessonCount: 36,
@@ -138,7 +138,7 @@ export const mockProducts: Product[] = [
     slug: "ai-powered-eb2b",
     title: "AI powered eB2B",
     description: "Master AI-powered B2B e-commerce solutions",
-    category: "AI",
+    category: "eB2B",
     thumbnail: ecommerceThumb,
     totalDuration: "7 hours 12 minutes",
     lessonCount: 9,
@@ -149,7 +149,7 @@ export const mockProducts: Product[] = [
     slug: "nextgen-dms",
     title: "NextGen DMS",
     description: "Advanced dealer management system for modern businesses",
-    category: "Management",
+    category: "DMS",
     thumbnail: crmThumb,
     totalDuration: "6 hours 45 minutes",
     lessonCount: 10,
@@ -204,13 +204,30 @@ export const mockProducts: Product[] = [
     slug: "salescode-studio",
     title: "Salescode Studio",
     description: "Comprehensive sales development and training platform",
-    category: "Training",
+    category: "Studio",
     thumbnail: websiteThumb,
     totalDuration: "6 hours 30 minutes",
     lessonCount: 10,
     videos: generateMockVideos("salescode-studio", websiteThumb)
   }
 ];
+
+// Define the exact filter categories as required
+export const filterCategories = ["SFA", "eB2B", "DMS", "AI", "Management", "Analytics", "Studio"] as const;
+
+// Helper function to generate filter tabs with dynamic counts
+export const generateFilterTabs = (products: Product[]) => {
+  const tabs = [
+    { id: "all", label: "All Products", count: products.length }
+  ];
+  
+  filterCategories.forEach(category => {
+    const count = products.filter(product => product.category === category).length;
+    tabs.push({ id: category.toLowerCase(), label: category, count });
+  });
+  
+  return tabs;
+};
 
 export const categories = [
   { id: "all", label: "All", count: mockProducts.length },

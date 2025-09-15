@@ -3,7 +3,7 @@ import Header from "@/components/Layout/Header";
 import VideoCard from "@/components/VideoCard/VideoCard";
 import EditableVideoCard from "@/components/EditableVideoCard";
 import FilterTabs from "@/components/FilterTabs/FilterTabs";
-import { categories } from "@/data/mockData";
+import { generateFilterTabs } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Grid, List, Plus } from "lucide-react";
 import { useData } from "@/contexts/DataContext";
@@ -23,13 +23,7 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const filters = [
-    { id: "all", label: "All Products", count: products.length },
-    { id: "sales", label: "SFA", count: 2 },
-    { id: "commerce", label: "DMS", count: 1 },
-    { id: "design", label: "Design", count: 1 },
-    { id: "finance", label: "Finance", count: 1 },
-  ];
+  const filters = generateFilterTabs(products);
 
   const filteredProducts = products.filter(product => {
     // Search both product name and video names
@@ -39,7 +33,7 @@ const Home = () => {
     );
     const matchesSearch = searchQuery === "" || productNameMatch || videoNameMatch;
     
-    const matchesFilter = activeFilter === "all" || product.category.toLowerCase() === activeFilter.toLowerCase();
+    const matchesFilter = activeFilter === "all" || product.category.toLowerCase() === activeFilter;
     
     return matchesSearch && matchesFilter;
   });
