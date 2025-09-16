@@ -92,6 +92,176 @@ export type Database = {
         }
         Relationships: []
       }
+      playlist_videos: {
+        Row: {
+          added_at: string
+          id: string
+          order_index: number | null
+          playlist_id: string
+          video_id: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          order_index?: number | null
+          playlist_id: string
+          video_id: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          order_index?: number | null
+          playlist_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playlist_videos_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "playlists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playlist_videos_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      playlists: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_featured: boolean | null
+          lesson_count: number | null
+          slug: string
+          thumbnail: string | null
+          title: string
+          total_duration: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_featured?: boolean | null
+          lesson_count?: number | null
+          slug: string
+          thumbnail?: string | null
+          title: string
+          total_duration?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_featured?: boolean | null
+          lesson_count?: number | null
+          slug?: string
+          thumbnail?: string | null
+          title?: string
+          total_duration?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          duration: string | null
+          id: string
+          is_new: boolean | null
+          order_index: number | null
+          product_id: string
+          slug: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration?: string | null
+          id?: string
+          is_new?: boolean | null
+          order_index?: number | null
+          product_id: string
+          slug: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration?: string | null
+          id?: string
+          is_new?: boolean | null
+          order_index?: number | null
+          product_id?: string
+          slug?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "videos_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
