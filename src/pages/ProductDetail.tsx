@@ -76,8 +76,8 @@ const ProductDetail = () => {
                   {product.description}
                 </p>
                 <div className="flex items-center space-x-6 text-sm text-muted-foreground animate-fade-in delay-300">
-                  <span>{product.total_duration}</span>
-                  <span>{product.lesson_count} lessons</span>
+                  <span>{product.totalDuration}</span>
+                  <span>{product.lessonCount} lessons</span>
                   <span className="bg-primary/10 text-primary px-2 py-1 rounded-full">
                     {product.category}
                   </span>
@@ -86,7 +86,7 @@ const ProductDetail = () => {
               
               <div className="relative animate-fade-in delay-400">
                 <img
-                  src={firstVideo?.thumbnail_url || product.thumbnail}
+                  src={firstVideo?.thumbnail || product.thumbnail}
                   alt={firstVideo?.title || product.title}
                   className="w-full aspect-video object-cover rounded-xl shadow-lg"
                 />
@@ -150,7 +150,7 @@ const ProductDetail = () => {
                     <EditableVideoCardWithMenu
                       id={video.id}
                       title={video.title}
-                      thumbnail={video.thumbnail_url}
+                      thumbnail={video.thumbnail}
                       duration={video.duration}
                       lessonCount={1}
                       category="Tutorial"
@@ -168,7 +168,7 @@ const ProductDetail = () => {
                     <VideoCardWithMenu
                       id={video.id}
                       title={video.title}
-                      thumbnail={video.thumbnail_url}
+                      thumbnail={video.thumbnail}
                       duration={video.duration}
                       lessonCount={1}
                       category="Tutorial"

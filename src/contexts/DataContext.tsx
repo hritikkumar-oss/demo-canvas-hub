@@ -1,60 +1,21 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-
-interface Product {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  category: string;
-  thumbnail: string;
-  total_duration: string;
-  lesson_count: number;
-  is_featured: boolean;
-  videos: Video[];
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface Video {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  duration: string;
-  thumbnail_url: string;
-  video_url: string;
-  product_id: string;
-  order_index: number;
-  is_new: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface Playlist {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url: string;
-  videos: Video[];
-  created_at?: string;
-  updated_at?: string;
-}
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Product, Video, Playlist, mockProducts, mockPlaylists } from '@/data/mockData';
 
 interface DataContextType {
   products: Product[];
   playlists: Playlist[];
-  loading: boolean;
-  updateProduct: (id: string, updates: Partial<Product>) => Promise<void>;
-  updateVideo: (productId: string, videoId: string, updates: Partial<Video>) => Promise<void>;
-  updatePlaylist: (id: string, updates: Partial<Playlist>) => Promise<void>;
-  addProduct: (product: Omit<Product, 'id' | 'videos'>) => Promise<void>;
-  addVideo: (productId: string, video: Omit<Video, 'id' | 'product_id'>) => Promise<void>;
-  addPlaylist: (playlist: Omit<Playlist, 'id' | 'videos'>) => Promise<void>;
-  deleteProduct: (id: string) => Promise<void>;
-  deleteVideo: (productId: string, videoId: string) => Promise<void>;
-  deletePlaylist: (id: string) => Promise<void>;
-  refreshData: () => Promise<void>;
+  updateProduct: (id: string, updates: Partial<Product>) => void;
+  updateVideo: (productId: string, videoId: string, updates: Partial<Video>) => void;
+  updatePlaylist: (id: string, updates: Partial<Playlist>) => void;
+  addProduct: (product: Omit<Product, 'id'>) => void;
+  addVideo: (productId: string, video: Omit<Video, 'id'>) => void;
+  addPlaylist: (playlist: Omit<Playlist, 'id'>) => void;
+  deleteProduct: (id: string) => void;
+  deleteVideo: (productId: string, videoId: string) => void;
+  deletePlaylist: (id: string) => void;
+  reorderProducts: (sourceIndex: number, destinationIndex: number) => void;
+  reorderVideos: (productId: string, sourceIndex: number, destinationIndex: number) => void;
+  reorderPlaylistVideos: (playlistId: string, sourceIndex: number, destinationIndex: number) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -72,240 +33,130 @@ interface DataProviderProps {
 }
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(mockProducts || []);
+  const [playlists, setPlaylists] = useState<Playlist[]>(mockPlaylists || []);
 
-  // Fetch products with their videos
-  const fetchProducts = async () => {
-    try {
-      const { data: productsData, error: productsError } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (productsError) throw productsError;
-
-      const { data: videosData, error: videosError } = await supabase
-        .from('videos')
-        .select('*')
-        .order('order_index', { ascending: true });
-
-      if (videosError) throw videosError;
-
-      // Group videos by product
-      const productsWithVideos = productsData.map(product => ({
-        ...product,
-        videos: videosData.filter(video => video.product_id === product.id)
-      }));
-
-      setProducts(productsWithVideos);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
+  const updateProduct = (id: string, updates: Partial<Product>) => {
+    setProducts(prev => prev.map(product => 
+      product.id === id ? { ...product, ...updates } : product
+    ));
   };
 
-  // Fetch playlists with their videos
-  const fetchPlaylists = async () => {
-    try {
-      const { data: playlistsData, error: playlistsError } = await supabase
-        .from('playlists')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const updateVideo = (productId: string, videoId: string, updates: Partial<Video>) => {
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? {
+            ...product,
+            videos: product.videos.map(video => 
+              video.id === videoId ? { ...video, ...updates } : video
+            )
+          }
+        : product
+    ));
 
-      if (playlistsError) throw playlistsError;
-
-      // For now, return playlists without videos since we haven't implemented the junction table queries yet
-      setPlaylists(playlistsData.map(playlist => ({ ...playlist, videos: [] })));
-    } catch (error) {
-      console.error('Error fetching playlists:', error);
-    }
+    // Also update videos in playlists
+    setPlaylists(prev => prev.map(playlist => ({
+      ...playlist,
+      videos: playlist.videos.map(video => 
+        video.id === videoId ? { ...video, ...updates } : video
+      )
+    })));
   };
 
-  const refreshData = async () => {
-    setLoading(true);
-    await Promise.all([fetchProducts(), fetchPlaylists()]);
-    setLoading(false);
+  const updatePlaylist = (id: string, updates: Partial<Playlist>) => {
+    setPlaylists(prev => prev.map(playlist => 
+      playlist.id === id ? { ...playlist, ...updates } : playlist
+    ));
   };
 
-  useEffect(() => {
-    refreshData();
-  }, []);
-
-  const updateProduct = async (id: string, updates: Partial<Product>) => {
-    try {
-      const { error } = await supabase
-        .from('products')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setProducts(prev => prev.map(product => 
-        product.id === id ? { ...product, ...updates } : product
-      ));
-    } catch (error) {
-      console.error('Error updating product:', error);
-      throw error;
-    }
+  const addProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: `product-${Date.now()}`,
+    };
+    setProducts(prev => [...prev, newProduct]);
   };
 
-  const updateVideo = async (productId: string, videoId: string, updates: Partial<Video>) => {
-    try {
-      const { error } = await supabase
-        .from('videos')
-        .update(updates)
-        .eq('id', videoId);
-
-      if (error) throw error;
-
-      setProducts(prev => prev.map(product => 
-        product.id === productId 
-          ? {
-              ...product,
-              videos: product.videos.map(video => 
-                video.id === videoId ? { ...video, ...updates } : video
-              )
-            }
-          : product
-      ));
-    } catch (error) {
-      console.error('Error updating video:', error);
-      throw error;
-    }
+  const addVideo = (productId: string, video: Omit<Video, 'id'>) => {
+    const newVideo: Video = {
+      ...video,
+      id: `video-${Date.now()}`,
+    };
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? { ...product, videos: [...product.videos, newVideo] }
+        : product
+    ));
   };
 
-  const updatePlaylist = async (id: string, updates: Partial<Playlist>) => {
-    try {
-      const { error } = await supabase
-        .from('playlists')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setPlaylists(prev => prev.map(playlist => 
-        playlist.id === id ? { ...playlist, ...updates } : playlist
-      ));
-    } catch (error) {
-      console.error('Error updating playlist:', error);
-      throw error;
-    }
+  const deleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(product => product.id !== id));
   };
 
-  const addProduct = async (product: Omit<Product, 'id' | 'videos'>) => {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .insert([product])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      const newProduct = { ...data, videos: [] };
-      setProducts(prev => [newProduct, ...prev]);
-    } catch (error) {
-      console.error('Error adding product:', error);
-      throw error;
-    }
+  const deleteVideo = (productId: string, videoId: string) => {
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? { ...product, videos: product.videos.filter(video => video.id !== videoId) }
+        : product
+    ));
   };
 
-  const addVideo = async (productId: string, video: Omit<Video, 'id' | 'product_id'>) => {
-    try {
-      const { data, error } = await supabase
-        .from('videos')
-        .insert([{ ...video, product_id: productId }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setProducts(prev => prev.map(product => 
-        product.id === productId 
-          ? { ...product, videos: [...product.videos, data] }
-          : product
-      ));
-    } catch (error) {
-      console.error('Error adding video:', error);
-      throw error;
-    }
+  const addPlaylist = (playlist: Omit<Playlist, 'id'>) => {
+    const newPlaylist: Playlist = {
+      ...playlist,
+      id: `playlist-${Date.now()}`,
+    };
+    setPlaylists(prev => [...prev, newPlaylist]);
   };
 
-  const deleteProduct = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setProducts(prev => prev.filter(product => product.id !== id));
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      throw error;
-    }
+  const deletePlaylist = (id: string) => {
+    setPlaylists(prev => prev.filter(playlist => playlist.id !== id));
   };
 
-  const deleteVideo = async (productId: string, videoId: string) => {
-    try {
-      const { error } = await supabase
-        .from('videos')
-        .delete()
-        .eq('id', videoId);
-
-      if (error) throw error;
-
-      setProducts(prev => prev.map(product => 
-        product.id === productId 
-          ? { ...product, videos: product.videos.filter(video => video.id !== videoId) }
-          : product
-      ));
-    } catch (error) {
-      console.error('Error deleting video:', error);
-      throw error;
-    }
+  const reorderProducts = (sourceIndex: number, destinationIndex: number) => {
+    setProducts(prev => {
+      const result = [...prev];
+      const [removed] = result.splice(sourceIndex, 1);
+      result.splice(destinationIndex, 0, removed);
+      return result;
+    });
   };
 
-  const addPlaylist = async (playlist: Omit<Playlist, 'id' | 'videos'>) => {
-    try {
-      const { data, error } = await supabase
-        .from('playlists')
-        .insert([playlist])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      const newPlaylist = { ...data, videos: [] };
-      setPlaylists(prev => [newPlaylist, ...prev]);
-    } catch (error) {
-      console.error('Error adding playlist:', error);
-      throw error;
-    }
+  const reorderVideos = (productId: string, sourceIndex: number, destinationIndex: number) => {
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? {
+            ...product,
+            videos: (() => {
+              const result = [...product.videos];
+              const [removed] = result.splice(sourceIndex, 1);
+              result.splice(destinationIndex, 0, removed);
+              return result;
+            })()
+          }
+        : product
+    ));
   };
 
-  const deletePlaylist = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('playlists')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setPlaylists(prev => prev.filter(playlist => playlist.id !== id));
-    } catch (error) {
-      console.error('Error deleting playlist:', error);
-      throw error;
-    }
+  const reorderPlaylistVideos = (playlistId: string, sourceIndex: number, destinationIndex: number) => {
+    setPlaylists(prev => prev.map(playlist => 
+      playlist.id === playlistId 
+        ? {
+            ...playlist,
+            videos: (() => {
+              const result = [...playlist.videos];
+              const [removed] = result.splice(sourceIndex, 1);
+              result.splice(destinationIndex, 0, removed);
+              return result;
+            })()
+          }
+        : playlist
+    ));
   };
 
   const value = {
     products,
     playlists,
-    loading,
     updateProduct,
     updateVideo,
     updatePlaylist,
@@ -315,7 +166,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     deleteProduct,
     deleteVideo,
     deletePlaylist,
-    refreshData,
+    reorderProducts,
+    reorderVideos,
+    reorderPlaylistVideos,
   };
 
   return (
