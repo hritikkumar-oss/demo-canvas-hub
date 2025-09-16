@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { popFromNavigationStack } from '@/lib/navigationStack';
 
 interface BackButtonProps {
   fallbackPath?: string;
@@ -9,23 +10,37 @@ interface BackButtonProps {
   className?: string;
   variant?: 'ghost' | 'outline' | 'default';
   size?: 'sm' | 'default' | 'lg';
+  overridePath?: string; // Force navigation to a specific path
 }
 
 export const BackButton: React.FC<BackButtonProps> = ({
-  fallbackPath = '/dashboard',
+  fallbackPath = '/',
   label = 'Back',
   className = '',
   variant = 'ghost',
-  size = 'sm'
+  size = 'sm',
+  overridePath
 }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    // Check if there's history to go back to
-    if (window.history.length > 1) {
+    // If overridePath is provided, always use it
+    if (overridePath) {
+      navigate(overridePath);
+      return;
+    }
+
+    // Try to get previous route from navigation stack
+    const previousPath = popFromNavigationStack();
+    
+    if (previousPath) {
+      // Navigate to previous route from stack
+      navigate(previousPath);
+    } else if (window.history.length > 1) {
+      // Fallback to browser back if no stack but has history
       navigate(-1);
     } else {
-      // Fallback to specified path if no history
+      // Final fallback to specified path
       navigate(fallbackPath);
     }
   };

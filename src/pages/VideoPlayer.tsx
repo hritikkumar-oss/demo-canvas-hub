@@ -150,14 +150,12 @@ const VideoPlayer = () => {
           <div className="p-4 border-b bg-background/50 backdrop-blur-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <Button 
+                <BackButton 
+                  overridePath="/demo-videos" 
+                  label="Back to Demo Videos" 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => navigate('/demo-videos')}
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Demo Videos
-                </Button>
+                />
               </div>
               {isAdmin && (
                 <Button variant="outline" size="sm" onClick={handleShare}>
