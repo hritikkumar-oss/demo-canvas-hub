@@ -53,7 +53,7 @@ const DemoVideos: React.FC = () => {
         {/* Header with Back Button */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
-            <BackButton fallbackPath="/" />
+            <BackButton overridePath="/" label="Back to Home" />
             <div>
               <h1 className="text-3xl font-bold text-foreground">Demo Videos</h1>
               <p className="text-muted-foreground mt-1">
