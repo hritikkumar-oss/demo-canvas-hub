@@ -172,7 +172,7 @@ const VideoPlayer = () => {
               {/* Fixed 16:9 YouTube Player */}
               <div className="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
                 <iframe
-                  src={video.videoUrl}
+                  src={video.video_url}
                   title={video.title}
                   className="w-full h-full"
                   frameBorder="0"

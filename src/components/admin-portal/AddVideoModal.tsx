@@ -19,8 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadFile, generateFilePath } from '@/lib/supabaseStorage';
 
 interface AddVideoModalProps {
   open: boolean;
@@ -30,17 +31,30 @@ interface AddVideoModalProps {
 export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange }) => {
   const { products, addVideo } = useData();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     productId: '',
     title: '',
     description: '',
     duration: '',
     videoUrl: '',
-    thumbnail: '',
   });
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setFormData({
+      productId: '',
+      title: '',
+      description: '',
+      duration: '',
+      videoUrl: '',
+    });
+    setThumbnailFile(null);
+    setThumbnailPreview('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.productId || !formData.title) {
       toast({
@@ -51,42 +65,64 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
       return;
     }
 
-    addVideo(formData.productId, {
-      title: formData.title,
-      slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-      description: formData.description,
-      duration: formData.duration || "0:00",
-      thumbnail: thumbnailPreview || '/placeholder.svg',
-      videoUrl: formData.videoUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      productId: formData.productId,
-      createdAt: new Date().toISOString(),
-    });
+    setIsSubmitting(true);
 
-    toast({
-      title: "Video added",
-      description: "New video has been added successfully.",
-    });
+    try {
+      let thumbnailUrl = '/placeholder.svg';
 
-    onOpenChange(false);
-    setFormData({
-      productId: '',
-      title: '',
-      description: '',
-      duration: '',
-      videoUrl: '',
-      thumbnail: '',
-    });
-    setThumbnailPreview('');
+      // Upload thumbnail if provided
+      if (thumbnailFile) {
+        const thumbnailPath = generateFilePath('thumbnails', thumbnailFile.name);
+        const uploadedUrl = await uploadFile(thumbnailFile, 'video-thumbnails', thumbnailPath);
+        
+        if (uploadedUrl) {
+          thumbnailUrl = uploadedUrl;
+        } else {
+          throw new Error('Failed to upload thumbnail');
+        }
+      }
+
+      // Create slug from title
+      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+      await addVideo(formData.productId, {
+        title: formData.title,
+        slug: slug,
+        description: formData.description,
+        duration: formData.duration || "0:00",
+        thumbnail_url: thumbnailUrl,
+        video_url: formData.videoUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        order_index: 0,
+        is_new: true,
+      });
+
+      toast({
+        title: "Video added",
+        description: "New video has been added successfully.",
+      });
+
+      onOpenChange(false);
+      resetForm();
+    } catch (error) {
+      console.error('Error adding video:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add video. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setThumbnailFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setThumbnailPreview(result);
-        setFormData(prev => ({ ...prev, thumbnail: result }));
       };
       reader.readAsDataURL(file);
     }
@@ -216,10 +252,19 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit">Add Video</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                'Add Video'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -137,7 +137,7 @@ const DemoVideos: React.FC = () => {
                 <CardContent className="p-0">
                   <div className="relative aspect-video">
                     <img
-                      src={video.thumbnail}
+              src={video.thumbnail_url}
                       alt={video.title}
                       className="w-full h-full object-cover rounded-t-lg"
                     />
@@ -181,7 +181,7 @@ const DemoVideos: React.FC = () => {
                   <div className="flex gap-4">
                     <div className="relative w-32 h-20 flex-shrink-0">
                       <img
-                        src={video.thumbnail}
+                        src={video.thumbnail_url}
                         alt={video.title}
                         className="w-full h-full object-cover rounded"
                       />
