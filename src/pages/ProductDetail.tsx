@@ -39,7 +39,7 @@ const ProductDetail = () => {
         <Header />
         <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Product not found</h1>
-          <BackButton fallbackPath="/" label="Go Back" variant="outline" />
+          <BackButton overridePath="/" label="Go Back" variant="outline" />
         </div>
       </div>
     );
@@ -54,7 +54,7 @@ const ProductDetail = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-4 mb-6">
-              <BackButton fallbackPath="/" />
+              <BackButton overridePath="/" />
               {isAdmin && !isViewerMode && (
                 <Button 
                   variant="outline" 
