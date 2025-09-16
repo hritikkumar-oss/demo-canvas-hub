@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAdminMode } from "@/hooks/useAdminMode";
 import InviteModal from "@/components/InviteModal";
+import salescodeLogoSrc from "@/assets/salescode-logo.png";
 
 interface HeaderProps {
   searchQuery?: string;
@@ -31,7 +32,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
           {/* Logo */}
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
             <img 
-              src="/lovable-uploads/e034b324-e49a-4ea8-9cb1-9222a945fe38.png" 
+              src={salescodeLogoSrc} 
               alt="salescode.ai Demo" 
               className="h-10 w-auto"
             />
