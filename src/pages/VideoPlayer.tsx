@@ -151,7 +151,8 @@ const VideoPlayer = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <BackButton 
-                  label="Back" 
+                  overridePath={`/product/${product.slug}`}
+                  label="Back to Product" 
                   variant="ghost" 
                   size="sm"
                 />
