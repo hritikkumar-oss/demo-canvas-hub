@@ -19,8 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadThumbnail, uploadVideo } from '@/lib/supabaseStorage';
 
 interface AddVideoModalProps {
   open: boolean;
@@ -36,11 +37,14 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
     description: '',
     duration: '',
     videoUrl: '',
-    thumbnail: '',
+    thumbnailUrl: '',
   });
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.productId || !formData.title) {
       toast({
@@ -51,44 +55,86 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
       return;
     }
 
-    addVideo(formData.productId, {
-      title: formData.title,
-      slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-      description: formData.description,
-      duration: formData.duration || "0:00",
-      thumbnail: thumbnailPreview || '/placeholder.svg',
-      videoUrl: formData.videoUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      productId: formData.productId,
-      createdAt: new Date().toISOString(),
-    });
+    setIsUploading(true);
+    
+    try {
+      let thumbnailUrl = formData.thumbnailUrl;
+      let videoUrl = formData.videoUrl;
 
-    toast({
-      title: "Video added",
-      description: "New video has been added successfully.",
-    });
+      // Upload thumbnail if file is selected
+      if (thumbnailFile) {
+        const thumbnailResult = await uploadThumbnail(thumbnailFile);
+        if (thumbnailResult.error) {
+          throw new Error(`Thumbnail upload failed: ${thumbnailResult.error}`);
+        }
+        thumbnailUrl = thumbnailResult.url;
+      }
 
-    onOpenChange(false);
-    setFormData({
-      productId: '',
-      title: '',
-      description: '',
-      duration: '',
-      videoUrl: '',
-      thumbnail: '',
-    });
-    setThumbnailPreview('');
+      // Upload video if file is selected
+      if (videoFile) {
+        const videoResult = await uploadVideo(videoFile);
+        if (videoResult.error) {
+          throw new Error(`Video upload failed: ${videoResult.error}`);
+        }
+        videoUrl = videoResult.url;
+      }
+
+      // Create video record
+      await addVideo(formData.productId, {
+        title: formData.title,
+        slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        description: formData.description,
+        duration: formData.duration || "0:00",
+        thumbnailUrl: thumbnailUrl || '/placeholder.svg',
+        videoUrl: videoUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        productId: formData.productId,
+        isNew: true,
+        orderIndex: 0,
+      });
+
+      // Reset form
+      onOpenChange(false);
+      setFormData({
+        productId: '',
+        title: '',
+        description: '',
+        duration: '',
+        videoUrl: '',
+        thumbnailUrl: '',
+      });
+      setThumbnailPreview('');
+      setThumbnailFile(null);
+      setVideoFile(null);
+    } catch (error) {
+      console.error('Video creation failed:', error);
+      toast({
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : "Failed to create video",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setThumbnailFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setThumbnailPreview(result);
-        setFormData(prev => ({ ...prev, thumbnail: result }));
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setVideoFile(file);
+      setFormData(prev => ({ ...prev, videoUrl: '' })); // Clear URL if file is selected
     }
   };
 
@@ -160,10 +206,48 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
             <Label htmlFor="videoUrl">Video URL</Label>
             <Input
               id="videoUrl"
-              placeholder="https://www.youtube.com/embed/..."
+              placeholder="https://www.youtube.com/embed/... or upload file below"
               value={formData.videoUrl}
               onChange={(e) => setFormData(prev => ({ ...prev, videoUrl: e.target.value }))}
+              disabled={!!videoFile}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="videoFile">Or Upload Video File</Label>
+            <div className="border-2 border-dashed border-border rounded-lg p-4">
+              <input
+                type="file"
+                id="videoFile"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                className="hidden"
+              />
+              <label
+                htmlFor="videoFile"
+                className="flex flex-col items-center justify-center cursor-pointer"
+              >
+                <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                <span className="text-sm text-muted-foreground">
+                  {videoFile ? videoFile.name : "Click to upload video file"}
+                </span>
+                {videoFile && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => {
+                      setVideoFile(null);
+                      const fileInput = document.getElementById('videoFile') as HTMLInputElement;
+                      if (fileInput) fileInput.value = '';
+                    }}
+                  >
+                    Remove file
+                  </Button>
+                )}
+              </label>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -205,7 +289,8 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
                     className="absolute top-2 right-2 h-8 w-8 p-0 bg-black/50 hover:bg-black/70"
                     onClick={() => {
                       setThumbnailPreview('');
-                      setFormData(prev => ({ ...prev, thumbnail: '' }));
+                      setThumbnailFile(null);
+                      setFormData(prev => ({ ...prev, thumbnailUrl: '' }));
                     }}
                   >
                     <X className="h-4 w-4 text-white" />
@@ -216,10 +301,19 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isUploading}>
               Cancel
             </Button>
-            <Button type="submit">Add Video</Button>
+            <Button type="submit" disabled={isUploading}>
+              {isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                'Add Video'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

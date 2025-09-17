@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useData } from '@/contexts/DataContext';
+import { uploadThumbnail } from '@/lib/supabaseStorage';
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -29,6 +30,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
   
   const [previewImage, setPreviewImage] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -36,11 +39,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
 
   const handleImageUpload = (file: File) => {
     if (file && file.type.startsWith('image/')) {
+      setThumbnailFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setPreviewImage(result);
-        setFormData(prev => ({ ...prev, thumbnail: result }));
       };
       reader.readAsDataURL(file);
     } else {
@@ -78,7 +81,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
     setIsDragOver(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.title.trim()) {
       toast({
         title: "Validation Error",
@@ -88,7 +91,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
       return;
     }
 
-    if (!formData.thumbnail) {
+    if (!thumbnailFile && !formData.thumbnail) {
       toast({
         title: "Validation Error",
         description: "Thumbnail is required",
@@ -97,24 +100,43 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
       return;
     }
 
-    addProduct({
-      title: formData.title,
-      slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-      description: formData.description,
-      thumbnail: formData.thumbnail,
-      category: formData.category || 'General',
-      lessonCount: formData.lessonCount,
-      totalDuration: formData.totalDuration || '0 min',
-      videos: []
-    });
+    setIsUploading(true);
 
-    toast({
-      title: "Product added",
-      description: "New product created successfully",
-    });
+    try {
+      let thumbnailUrl = formData.thumbnail;
 
-    resetForm();
-    onClose();
+      // Upload thumbnail if file is selected
+      if (thumbnailFile) {
+        const thumbnailResult = await uploadThumbnail(thumbnailFile);
+        if (thumbnailResult.error) {
+          throw new Error(`Thumbnail upload failed: ${thumbnailResult.error}`);
+        }
+        thumbnailUrl = thumbnailResult.url;
+      }
+
+      await addProduct({
+        title: formData.title,
+        slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        description: formData.description,
+        thumbnail: thumbnailUrl,
+        category: formData.category || 'General',
+        lessonCount: formData.lessonCount,
+        totalDuration: formData.totalDuration || '0 min',
+        videos: []
+      });
+
+      resetForm();
+      onClose();
+    } catch (error) {
+      console.error('Product creation failed:', error);
+      toast({
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : "Failed to create product",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const resetForm = () => {
@@ -127,6 +149,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
       totalDuration: ''
     });
     setPreviewImage('');
+    setThumbnailFile(null);
   };
 
   const handleClose = () => {
@@ -167,6 +190,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
                     className="absolute top-2 right-2"
                     onClick={() => {
                       setPreviewImage('');
+                      setThumbnailFile(null);
                       setFormData(prev => ({ ...prev, thumbnail: '' }));
                     }}
                   >
@@ -257,11 +281,18 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={handleClose} disabled={isUploading}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
-            Add Product
+          <Button onClick={handleSave} disabled={isUploading}>
+            {isUploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              'Add Product'
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
