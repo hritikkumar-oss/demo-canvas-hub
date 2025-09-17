@@ -1,45 +1,69 @@
-# Admin Save-Sync Implementation Report
+# Admin Save/Upload Flow Debug Report
 
-## Overview
-Successfully implemented complete admin save-sync flow with file uploads, database updates, and real-time propagation across the website.
+## Database Backup
 
-## Implementation Details
+**Backup Location**: `backup/` directory
+- `backup/products_backup_20250917.sql`: 4 products backed up
+- `backup/videos_backup_20250917.sql`: 8 videos backed up  
+- `backup/playlists_backup_20250917.sql`: 0 playlists (empty table)
 
-### 1. File Upload System
-- **Storage Integration**: Created `src/lib/supabaseStorage.ts` with utilities for uploading videos and thumbnails to Supabase Storage
-- **Buckets**: Utilized existing `video-files` and `video-thumbnails` public buckets
-- **Error Handling**: Comprehensive error handling with user feedback for upload failures
-- **File Types**: Support for both video files and image thumbnails with validation
+## Issue Reproduction and Analysis
 
-### 2. Database Integration
-- **Case Conversion**: Maintained existing `src/utils/caseConverters.ts` for snake_case ↔ camelCase mapping
-- **API Layer**: Enhanced `src/lib/supabaseApi.ts` with proper case conversion for all CRUD operations
-- **Transaction Flow**: Upload file → confirm success → update DB row with file URL
-- **Validation**: No DB writes unless upload succeeds
+### Failed Request Analysis
+**Product ID**: `be2cffef-08fd-4a9f-9b4e-178f348ebbb6`
+**HTTP Status**: 406 (Not Acceptable)
+**Error Code**: PGRST116 ("Cannot coerce the result to a single JSON object")
 
-### 3. Real-time Updates
-- **Realtime Hook**: Created `src/hooks/useRealtimeUpdates.tsx` for live data synchronization
-- **Database Setup**: Enabled Supabase Realtime on products, videos, playlists, and playlist_videos tables
-- **Event Handling**: Real-time listeners for INSERT, UPDATE, DELETE events
-- **State Management**: Automatic state updates across all open sessions
+**Request Details**:
+```
+PATCH https://wpkcwzclgnnvrmljeyyz.supabase.co/rest/v1/products?id=eq.be2cffef-08fd-4a9f-9b4e-178f348ebbb6&select=*
+Headers: authorization: Bearer [anon_key], content-type: application/json
+Body: {"title":"AI-Powered eB2B","description":"...", "thumbnail":"data:image/webp;base64,..."}
+```
 
-### 4. Data Context Enhancement
-- **Full Integration**: Updated `src/contexts/DataContext.tsx` to use Supabase APIs exclusively
-- **Async Operations**: All CRUD operations now async with proper error handling
-- **Fallback Support**: Graceful fallback to mock data if Supabase unavailable
-- **Toast Notifications**: User feedback for all operations (success/failure)
+**Root Cause**: RLS policy blocks updates when `created_by = null` and using anon key.
 
-### 5. UI Improvements
-- **Upload Progress**: Loading states and progress indicators during file uploads
-- **File Preview**: Thumbnail preview before upload
-- **Error Messages**: Clear success/failure UI messages
-- **Disabled States**: Proper form disabling during uploads
+### RLS Policy Analysis
+Current UPDATE policy: `((auth.uid() = created_by) OR (auth.uid() IS NOT NULL))`
+- All products have `created_by: null`
+- Policy requires matching `created_by` OR authenticated user
+- The `OR (auth.uid() IS NOT NULL)` condition should allow updates, but PGRST116 suggests no rows are being updated
 
-## Security & RLS
-- **Client-Side Safety**: No service role keys exposed in client code
-- **Existing RLS**: Leveraged existing Row Level Security policies
-- **Authenticated Operations**: All admin operations require authentication
-- **Storage Security**: Public buckets for thumbnails, secure handling of video files
+### Console Logs Analysis
+```
+Product not found or permission denied for update Product ID: be2cffef-08fd-4a9f-9b4e-178f348ebbb6
+Error updating product: "Product not found or permission denied for update"
+```
+
+## Solution Implemented
+
+### 1. Secure Edge Functions
+Created Edge Functions using service role key to bypass RLS:
+- `supabase/functions/admin-update-product/index.ts`
+- `supabase/functions/admin-update-video/index.ts`
+
+**Security Features**:
+- JWT token verification with anon client
+- Service role key for database operations
+- Comprehensive error handling and logging
+- CORS headers for web app integration
+
+### 2. Enhanced Storage Upload Flow
+Created `src/utils/adminUploadUtils.ts` with:
+- Upload verification (checks file exists after upload)
+- Comprehensive error handling
+- Proper logging throughout upload process
+- Type-safe upload results
+
+### 3. Updated API Layer
+Modified `src/lib/supabaseApi.ts`:
+- `updateProduct()` now uses Edge Function instead of direct client call
+- `updateVideo()` now uses Edge Function instead of direct client call
+- Enhanced error logging and handling
+- Preserved case conversion logic
+
+### 4. Real-time Updates
+The existing `useRealtimeUpdates` hook in the DataContext will automatically reflect changes once the Edge Functions successfully update the database.
 
 ## Testing Flow
 
