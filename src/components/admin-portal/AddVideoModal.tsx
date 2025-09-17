@@ -85,11 +85,11 @@ export const AddVideoModal: React.FC<AddVideoModalProps> = ({ open, onOpenChange
         slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
         description: formData.description,
         duration: formData.duration || "0:00",
-        thumbnailUrl: thumbnailUrl || '/placeholder.svg',
+        thumbnail: thumbnailUrl || '/placeholder.svg',
         videoUrl: videoUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         productId: formData.productId,
+        createdAt: new Date().toISOString(),
         isNew: true,
-        orderIndex: 0,
       });
 
       // Reset form
