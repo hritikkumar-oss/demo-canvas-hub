@@ -51,15 +51,27 @@ export async function createProduct(product: any) {
 
 export async function updateProduct(id: string, updates: any) {
   const supabaseUpdates = convertProductToSupabase(updates);
+  console.log("Updating product:", id, "with payload:", supabaseUpdates);
   
   const { data, error } = await supabase
     .from('products')
     .update(supabaseUpdates)
     .eq('id', id)
     .select()
-    .single();
+    .maybeSingle();
 
-  if (error) throw error;
+  console.log("Supabase response:", { data, error });
+
+  if (error) {
+    console.error("Product update error:", error);
+    throw error;
+  }
+  
+  if (!data) {
+    const errorMsg = "Product not found or permission denied for update";
+    console.error(errorMsg, "Product ID:", id);
+    throw new Error(errorMsg);
+  }
   
   return convertProductFromSupabase(data);
 }
