@@ -1,8 +1,0 @@
--- Database backup for products table - 2025-09-17T10:05:00Z
--- Generated before admin save/upload flow fixes
-
-INSERT INTO public.products (id, title, description, category, thumbnail, lesson_count, total_duration, is_featured, slug, created_by, created_at, updated_at) VALUES
-('be2cffef-08fd-4a9f-9b4e-178f348ebbb6', 'AI-Powered eB2B', 'Revolutionize your B2B experience with artificial intelligence', 'AI', '/lovable-uploads/18aa9a10-08d6-4991-b18b-dc887d6b5c86.png', 8, '45:30', true, 'ai-powered-eb2b', NULL, '2025-09-16 18:14:02.745898+00', '2025-09-16 18:14:02.745898+00'),
-('700e2f20-a95d-4cbd-8fbe-4ac778d7ee51', 'NextGen CRM', 'Advanced CRM solution for modern businesses', 'CRM', '/lovable-uploads/e034b324-e49a-4ea8-9cb1-9222a945fe38.png', 6, '32:15', true, 'nextgen-crm', NULL, '2025-09-16 18:14:02.745898+00', '2025-09-16 18:14:02.745898+00'),
-('1e4b2f33-f6d7-455d-9dc0-d36ea1a7e37b', 'NextGen DMS', 'Document Management System for the future', 'DMS', '/lovable-uploads/18aa9a10-08d6-4991-b18b-dc887d6b5c86.png', 5, '28:45', false, 'nextgen-dms', NULL, '2025-09-16 18:14:02.745898+00', '2025-09-16 18:14:02.745898+00'),
-('47dc8ef3-7998-4eaf-8697-e8ded4a03c46', 'Smart Analytics', 'Powerful analytics platform for data-driven decisions', 'Analytics', '/lovable-uploads/e034b324-e49a-4ea8-9cb1-9222a945fe38.png', 9, '51:20', true, 'smart-analytics', NULL, '2025-09-16 18:14:02.745898+00', '2025-09-16 18:14:02.745898+00');

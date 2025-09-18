@@ -51,32 +51,17 @@ export async function createProduct(product: any) {
 
 export async function updateProduct(id: string, updates: any) {
   const supabaseUpdates = convertProductToSupabase(updates);
-  console.log("Updating product:", id, "with payload:", supabaseUpdates);
   
-  try {
-    // Use Edge Function for secure admin updates with service role key
-    const { data, error } = await supabase.functions.invoke('admin-update-product', {
-      body: { id, updates: supabaseUpdates }
-    });
+  const { data, error } = await supabase
+    .from('products')
+    .update(supabaseUpdates)
+    .eq('id', id)
+    .select()
+    .single();
 
-    console.log("Admin function response:", { data, error });
-
-    if (error) {
-      console.error("Admin function error:", error);
-      throw new Error(error.message);
-    }
-
-    if (!data) {
-      const errorMsg = "Product not found or permission denied for update";
-      console.error(errorMsg, "Product ID:", id);
-      throw new Error(errorMsg);
-    }
-    
-    return convertProductFromSupabase(data);
-  } catch (error) {
-    console.error("Product update failed:", error);
-    throw error;
-  }
+  if (error) throw error;
+  
+  return convertProductFromSupabase(data);
 }
 
 export async function deleteProduct(id: string) {
@@ -129,32 +114,17 @@ export async function createVideo(video: any) {
 
 export async function updateVideo(id: string, updates: any) {
   const supabaseUpdates = convertVideoToSupabase(updates);
-  console.log("Updating video:", id, "with payload:", supabaseUpdates);
   
-  try {
-    // Use Edge Function for secure admin updates with service role key
-    const { data, error } = await supabase.functions.invoke('admin-update-video', {
-      body: { id, updates: supabaseUpdates }
-    });
+  const { data, error } = await supabase
+    .from('videos')
+    .update(supabaseUpdates)
+    .eq('id', id)
+    .select()
+    .single();
 
-    console.log("Admin video function response:", { data, error });
-
-    if (error) {
-      console.error("Admin video function error:", error);
-      throw new Error(error.message);
-    }
-
-    if (!data) {
-      const errorMsg = "Video not found or permission denied for update";
-      console.error(errorMsg, "Video ID:", id);
-      throw new Error(errorMsg);
-    }
-    
-    return convertVideoFromSupabase(data);
-  } catch (error) {
-    console.error("Video update failed:", error);
-    throw error;
-  }
+  if (error) throw error;
+  
+  return convertVideoFromSupabase(data);
 }
 
 export async function deleteVideo(id: string) {
