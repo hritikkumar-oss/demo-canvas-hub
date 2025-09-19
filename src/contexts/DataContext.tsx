@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Product, Video, Playlist, mockProducts, mockPlaylists } from '@/data/mockData';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Product, Video, Playlist } from '@/data/mockData';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DataContextType {
   products: Product[];
@@ -33,8 +34,106 @@ interface DataProviderProps {
 }
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(mockProducts || []);
-  const [playlists, setPlaylists] = useState<Playlist[]>(mockPlaylists || []);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products and videos from Supabase
+  const fetchProducts = async () => {
+    try {
+      // Fetch products
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (productsError) {
+        console.error('Error fetching products:', productsError);
+        return;
+      }
+
+      // Fetch videos
+      const { data: videosData, error: videosError } = await supabase
+        .from('videos')
+        .select('*')
+        .order('order_index', { ascending: true });
+
+      if (videosError) {
+        console.error('Error fetching videos:', videosError);
+        return;
+      }
+
+      // Combine products with their videos
+      const productsWithVideos: Product[] = productsData.map(product => ({
+        id: product.id,
+        slug: product.slug,
+        title: product.title,
+        description: product.description || '',
+        category: product.category || '',
+        thumbnail: product.thumbnail || '',
+        totalDuration: product.total_duration || '0:00',
+        lessonCount: product.lesson_count || 0,
+        isNew: product.is_featured || false,
+        videos: videosData
+          .filter(video => video.product_id === product.id)
+          .map(video => ({
+            id: video.id,
+            slug: video.slug,
+            title: video.title,
+            description: video.description || '',
+            duration: video.duration || '0:00',
+            thumbnail: video.thumbnail_url || '',
+            videoUrl: video.video_url || '',
+            productId: video.product_id,
+            createdAt: video.created_at,
+            isNew: video.is_new || false
+          }))
+      }));
+
+      setProducts(productsWithVideos);
+    } catch (error) {
+      console.error('Error in fetchProducts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch playlists from Supabase
+  const fetchPlaylists = async () => {
+    try {
+      const { data: playlistsData, error: playlistsError } = await supabase
+        .from('playlists')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (playlistsError) {
+        console.error('Error fetching playlists:', playlistsError);
+        return;
+      }
+
+      // Convert to frontend format (simplified for now)
+      const formattedPlaylists: Playlist[] = playlistsData.map(playlist => ({
+        id: playlist.id,
+        name: playlist.title,
+        description: playlist.description || '',
+        coverThumbnailUrl: playlist.thumbnail_url || '',
+        videoCount: 0, // Will be calculated based on playlist_videos
+        totalDuration: '0:00',
+        createdBy: playlist.created_by || '',
+        createdAt: playlist.created_at,
+        videos: [] // Will be populated with actual videos
+      }));
+
+      setPlaylists(formattedPlaylists);
+    } catch (error) {
+      console.error('Error in fetchPlaylists:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchPlaylists();
+  }, []);
 
   const updateProduct = (id: string, updates: Partial<Product>) => {
     setProducts(prev => prev.map(product => 
