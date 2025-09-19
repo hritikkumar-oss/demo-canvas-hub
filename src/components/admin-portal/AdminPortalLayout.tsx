@@ -10,10 +10,8 @@ import {
   User, 
   Settings,
   Home,
-  Package,
-  LogOut
+  Package
 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -35,11 +33,6 @@ const sidebarItems = [
 
 const AdminPortalLayout: React.FC = () => {
   const location = useLocation();
-  const { user, signOut } = useAuth();
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
 
   const isActive = (path: string) => {
     if (path === '/admin-portal') {
@@ -115,17 +108,13 @@ const AdminPortalLayout: React.FC = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem disabled>
+                <DropdownMenuItem>
                   <User className="mr-2 h-4 w-4" />
-                  {user?.email}
+                  Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
