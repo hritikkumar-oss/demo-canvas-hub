@@ -11,8 +11,7 @@ export type AuthUser = User & {
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
 }
@@ -34,7 +33,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user as AuthUser || null);
+      const user = session?.user as AuthUser || null;
+      if (user) {
+        // Check if user is the admin
+        const isAdminUser = user.email === 'Business@salescode.ai';
+        const updatedUser = {
+          ...user,
+          user_metadata: { ...user.user_metadata, role: isAdminUser ? 'admin' : 'viewer' }
+        } as AuthUser;
+        setUser(updatedUser);
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
@@ -42,41 +52,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user as AuthUser || null);
+      const user = session?.user as AuthUser || null;
+      if (user) {
+        // Check if user is the admin
+        const isAdminUser = user.email === 'Business@salescode.ai';
+        const updatedUser = {
+          ...user,
+          user_metadata: { ...user.user_metadata, role: isAdminUser ? 'admin' : 'viewer' }
+        } as AuthUser;
+        setUser(updatedUser);
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (!error && data.user) {
-      // Use the role from user metadata (set during invite process or admin setup)
-      const role = data.user.user_metadata?.role || 'viewer';
-      const updatedUser = {
-        ...data.user,
-        user_metadata: { ...data.user.user_metadata, role }
-      } as AuthUser;
-      setUser(updatedUser);
-    }
-    
-    return { error };
-  };
-
-  const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
       options: {
-        data: {
-          role: 'viewer'
-        },
-        emailRedirectTo: `${window.location.origin}/`
+        redirectTo: `${window.location.origin}/auth`
       }
     });
     return { error };
@@ -94,8 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = {
     user,
     loading,
-    signIn,
-    signUp,
+    signInWithGoogle,
     signOut,
     isAdmin,
   };
