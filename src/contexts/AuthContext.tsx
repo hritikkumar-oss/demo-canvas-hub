@@ -89,8 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Check if user is admin based on email
-  const isAdmin = user?.email === 'Business@salescode.ai';
+  const isAdmin = user?.user_metadata?.role === 'admin';
 
   const value = {
     user,

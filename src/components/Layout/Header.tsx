@@ -41,9 +41,9 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
-              to={isAdminMode ? "/admin-portal" : isViewerMode ? "/viewer/home" : "/"} 
+              to={isAdminMode ? "/admin/home" : isViewerMode ? "/viewer/home" : "/"} 
               className={`transition-colors font-medium ${
-                isActivePath('/') || isActivePath('/admin-portal') || isActivePath('/viewer/home') ? 'text-primary' : 'text-foreground hover:text-primary'
+                isActivePath('/') || isActivePath('/admin/home') || isActivePath('/viewer/home') ? 'text-primary' : 'text-foreground hover:text-primary'
               }`}
             >
               Home
@@ -138,7 +138,7 @@ const Header = ({ searchQuery = "", onSearchChange }: HeaderProps = {}) => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t animate-slide-up">
             <nav className="flex flex-col space-y-4">
-              <Link to={isAdminMode ? "/admin-portal" : isViewerMode ? "/viewer/home" : "/"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <Link to={isAdminMode ? "/admin/home" : isViewerMode ? "/viewer/home" : "/"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                 Home
               </Link>
               <Link to={isAdminMode ? "/admin/new-launches" : isViewerMode ? "/viewer/new-launches" : "/new-launches"} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
