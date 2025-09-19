@@ -56,8 +56,12 @@ const App = () => (
               <Route path="/admin/*" element={<AdminView />} />
               <Route path="/viewer/*" element={<ViewerView />} />
               
-              {/* Admin Portal Routes */}
-              <Route path="/admin-portal" element={<AdminPortalLayout />}>
+              {/* Admin Portal Routes - Protected for authenticated users only */}
+              <Route path="/admin-portal" element={
+                <ProtectedRoute>
+                  <AdminPortalLayout />
+                </ProtectedRoute>
+              }>
                 <Route index element={<AdminPortalHome />} />
                 <Route path="products" element={<AdminPortalProducts />} />
                 <Route path="videos" element={<AdminPortalVideos />} />
