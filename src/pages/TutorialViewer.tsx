@@ -26,7 +26,7 @@ const TutorialViewer = () => {
         <Header />
         <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Tutorial not found</h1>
-          <BackButton fallbackPath="/demo-videos" label="Go Back" variant="outline" />
+          <BackButton fallbackPath="/" label="Go Back" variant="outline" />
         </div>
       </div>
     );
@@ -44,8 +44,8 @@ const TutorialViewer = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
             <BackButton 
-              fallbackPath="/demo-videos" 
-              label={`Back to Demo Videos`}
+              fallbackPath="/" 
+              label={`Back to Home`}
             />
           </div>
           <Button variant="outline" size="sm">

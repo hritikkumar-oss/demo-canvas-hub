@@ -14,7 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NewLaunches from "./pages/NewLaunches";
 import Playlists from "./pages/Playlists";
 import PlaylistDetail from "./pages/PlaylistDetail";
-import DemoVideos from "./pages/DemoVideos";
+
 import NotFound from "./pages/NotFound";
 import AuthGate from "./pages/AuthGate";
 import Auth from "./pages/Auth";
@@ -44,10 +44,8 @@ const App = () => (
               <Route path="/product/:productSlug" element={<ProductDetail />} />
               <Route path="/product/:productSlug/tutorial/:videoSlug" element={<TutorialViewer />} />
               <Route path="/product/:productSlug/video/:videoSlug" element={<VideoPlayer />} />
-              <Route path="/demo-videos" element={<DemoVideos />} />
-              
               {/* Legacy routes - redirect old format to new */}
-              <Route path="/lessons-tutorials" element={<Navigate to="/demo-videos" replace />} />
+              <Route path="/lessons-tutorials" element={<Navigate to="/" replace />} />
               <Route path="/video/:productCategory/:videoId" element={<Navigate to="/" replace />} />
               <Route path="/video/:productId/:videoId" element={<VideoPlayer />} />
               <Route path="/new-launches" element={<NewLaunches />} />

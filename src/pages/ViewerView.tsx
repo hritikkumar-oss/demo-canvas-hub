@@ -7,7 +7,7 @@ import VideoPlayer from '@/pages/VideoPlayer';
 import NewLaunches from '@/pages/NewLaunches';
 import Playlists from '@/pages/Playlists';
 import PlaylistDetail from '@/pages/PlaylistDetail';
-import DemoVideos from '@/pages/DemoVideos';
+
 import NotFound from '@/pages/NotFound';
 
 const ViewerView: React.FC = () => {
@@ -17,7 +17,7 @@ const ViewerView: React.FC = () => {
       <Route path="/product/:productId" element={<ProductDetail />} />
       <Route path="/product/:productId/tutorial/:videoId" element={<TutorialViewer />} />
       <Route path="/video/:productId/:videoId" element={<VideoPlayer />} />
-      <Route path="/demo-videos" element={<DemoVideos />} />
+      
       <Route path="/new-launches" element={<NewLaunches />} />
       <Route path="/playlists" element={<Playlists />} />
       <Route path="/playlists/:playlistId" element={<PlaylistDetail />} />

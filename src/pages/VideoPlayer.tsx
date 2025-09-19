@@ -49,7 +49,7 @@ const VideoPlayer = () => {
         <Header />
         <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Video not found</h1>
-          <BackButton fallbackPath="/demo-videos" label="Go Back" variant="outline" />
+          <BackButton fallbackPath="/" label="Go Back" variant="outline" />
         </div>
       </div>
     );
